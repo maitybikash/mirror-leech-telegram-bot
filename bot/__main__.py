@@ -1,8 +1,11 @@
-from . import LOGGER, bot_loop
+from . import LOGGER, bot_loop, sabnzbd_client
 from .core.telegram_manager import TgClient
 from .core.config_manager import Config
 
 Config.load()
+sabnzbd_client.update_config(
+    Config.SABNZBD_HOST, Config.SABNZBD_API_KEY, Config.SABNZBD_PORT
+)
 
 
 async def main():

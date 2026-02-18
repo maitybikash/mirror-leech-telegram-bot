@@ -40,6 +40,9 @@ RCLONE_SERVE_PASS = ""
 JD_EMAIL = ""
 JD_PASS = ""
 # Sabnzbd
+SABNZBD_HOST = "http://localhost"
+SABNZBD_API_KEY = ""
+SABNZBD_PORT = "8070"
 USENET_SERVERS = [
     {
         "name": "main",

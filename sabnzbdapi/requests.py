@@ -31,6 +31,10 @@ class SabnzbdClient(JobFunctions):
             disable_warnings(InsecureRequestWarning)
         super().__init__()
 
+    def update_config(self, host: str, api_key: str, port: str):
+        self._base_url = f"{host.rstrip('/')}:{port}"
+        self._default_params["apikey"] = api_key
+
     def _session(self):
         if self._http_session is not None:
             return self._http_session

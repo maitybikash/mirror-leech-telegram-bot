@@ -71,10 +71,12 @@ jd_listener_lock = Lock()
 cpu_eater_lock = Lock()
 same_directory_lock = Lock()
 
+from bot.core.config_manager import Config
+
 sabnzbd_client = SabnzbdClient(
-    host="http://localhost",
-    api_key="mltb",
-    port="8070",
+    host=Config.SABNZBD_HOST,
+    api_key=Config.SABNZBD_API_KEY,
+    port=Config.SABNZBD_PORT,
 )
 
 scheduler = AsyncIOScheduler(event_loop=bot_loop)
