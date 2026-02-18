@@ -4,6 +4,7 @@ from io import StringIO, BytesIO
 from os import path as ospath, getcwd, chdir
 from textwrap import indent
 from traceback import format_exc
+from inspect import isawaitable
 
 from .. import LOGGER
 from ..core.telegram_manager import TgClient
@@ -70,39 +71,60 @@ async def do(func, message):
 
     stdout = StringIO()
 
-    try:
-        if func == "exec":
-            exec(f"def func():\n{indent(body, '  ')}", env)
-        else:
-            exec(f"async def func():\n{indent(body, '  ')}", env)
-    except Exception as e:
-        return f"{e.__class__.__name__}: {e}"
-
-    rfunc = env["func"]
+    is_exec = False
+    compiled_code = None
 
     try:
-        with redirect_stdout(stdout):
-            func_return = (
-                await sync_to_async(rfunc) if func == "exec" else await rfunc()
-            )
-    except:
-        value = stdout.getvalue()
-        return f"{value}{format_exc()}"
+        compiled_code = compile(body, "<string>", "eval")
+    except SyntaxError:
+        pass
+
+    if compiled_code:
+        try:
+            with redirect_stdout(stdout):
+                func_return = await sync_to_async(eval, compiled_code, env)
+                if func == "aexec" and isawaitable(func_return):
+                    func_return = await func_return
+        except:
+            value = stdout.getvalue()
+            return f"{value}{format_exc()}"
     else:
-        value = stdout.getvalue()
-        result = None
-        if func_return is None:
-            if value:
-                result = f"{value}"
+        is_exec = True
+        try:
+            if func == "exec":
+                exec(f"def func():\n{indent(body, '  ')}", env)
             else:
-                try:
-                    result = f"{repr(await sync_to_async(eval, body, env))}"
-                except:
-                    pass
+                exec(f"async def func():\n{indent(body, '  ')}", env)
+        except Exception as e:
+            return f"{e.__class__.__name__}: {e}"
+
+        rfunc = env["func"]
+
+        try:
+            with redirect_stdout(stdout):
+                func_return = (
+                    await sync_to_async(rfunc) if func == "exec" else await rfunc()
+                )
+        except:
+            value = stdout.getvalue()
+            return f"{value}{format_exc()}"
+
+    value = stdout.getvalue()
+    result = None
+
+    if func_return is None:
+        if value:
+            result = f"{value}"
+        elif not is_exec:
+            result = f"{repr(func_return)}"
+    else:
+        if not is_exec:
+            result = f"{value}{repr(func_return)}"
         else:
             result = f"{value}{func_return}"
-        if result:
-            return result
+
+    if result:
+        return result
 
 
 @new_task
