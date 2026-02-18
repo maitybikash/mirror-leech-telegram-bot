@@ -17,7 +17,6 @@ from base64 import b64decode, b64encode
 from ....core.config_manager import Config
 from ...ext_utils.exceptions import DirectDownloadLinkException
 from ...ext_utils.help_messages import PASSWORD_ERROR_MESSAGE
-from ...ext_utils.links_utils import is_share_link
 from ...ext_utils.status_utils import speed_string_to_bytes
 
 user_agent = (
@@ -38,200 +37,6 @@ def direct_link_generator_exception(func):
             ) from e
 
     return wrapper
-
-
-def direct_link_generator(link):
-    """direct links generator"""
-    domain = urlparse(link).hostname
-    if not domain:
-        raise DirectDownloadLinkException("ERROR: Invalid URL")
-    elif "yadi.sk" in link or "disk.yandex." in link:
-        return yandex_disk(link)
-    elif "buzzheavier.com" in domain:
-        return buzzheavier(link)
-    elif "devuploads" in domain:
-        return devuploads(link)
-    elif "lulacloud.com" in domain:
-        return lulacloud(link)
-    elif "uploadhaven" in domain:
-        return uploadhaven(link)
-    elif "fuckingfast.co" in domain:
-        return fuckingfast_dl(link)
-    elif "mediafile.cc" in domain:
-        return mediafile(link)
-    elif "mediafire.com" in domain:
-        return mediafire(link)
-    elif "osdn.net" in domain:
-        return osdn(link)
-    elif "github.com" in domain:
-        return github(link)
-    elif "transfer.it" in domain:
-        return transfer_it(link)
-    elif "hxfile.co" in domain:
-        return hxfile(link)
-    elif "1drv.ms" in domain:
-        return onedrive(link)
-    elif any(x in domain for x in ["pixeldrain.com", "pixeldra.in"]):
-        return pixeldrain(link)
-    elif "racaty" in domain:
-        return racaty(link)
-    elif "1fichier.com" in domain:
-        return fichier(link)
-    elif "solidfiles.com" in domain:
-        return solidfiles(link)
-    elif "krakenfiles.com" in domain:
-        return krakenfiles(link)
-    elif "upload.ee" in domain:
-        return uploadee(link)
-    elif "gofile.io" in domain:
-        return gofile(link)
-    elif "send.cm" in domain:
-        return send_cm(link)
-    elif "tmpsend.com" in domain:
-        return tmpsend(link)
-    elif "easyupload.io" in domain:
-        return easyupload(link)
-    elif "streamvid.net" in domain:
-        return streamvid(link)
-    elif "shrdsk.me" in domain:
-        return shrdsk(link)
-    elif "u.pcloud.link" in domain:
-        return pcloud(link)
-    elif "qiwi.gg" in domain:
-        return qiwi(link)
-    elif "mp4upload.com" in domain:
-        return mp4upload(link)
-    elif "berkasdrive.com" in domain:
-        return berkasdrive(link)
-    elif "swisstransfer.com" in domain:
-        return swisstransfer(link)
-    elif any(x in domain for x in ["akmfiles.com", "akmfls.xyz"]):
-        return akmfiles(link)
-    elif any(
-        x in domain
-        for x in [
-            "dood.watch",
-            "doodstream.com",
-            "dood.to",
-            "dood.so",
-            "dood.cx",
-            "dood.la",
-            "dood.ws",
-            "dood.sh",
-            "doodstream.co",
-            "dood.pm",
-            "dood.wf",
-            "dood.re",
-            "dood.video",
-            "dooood.com",
-            "dood.yt",
-            "doods.yt",
-            "dood.stream",
-            "doods.pro",
-            "ds2play.com",
-            "d0o0d.com",
-            "ds2video.com",
-            "do0od.com",
-            "d000d.com",
-        ]
-    ):
-        return doods(link)
-    elif any(
-        x in domain
-        for x in [
-            "streamtape.com",
-            "streamtape.co",
-            "streamtape.cc",
-            "streamtape.to",
-            "streamtape.net",
-            "streamta.pe",
-            "streamtape.xyz",
-        ]
-    ):
-        return streamtape(link)
-    elif any(x in domain for x in ["wetransfer.com", "we.tl"]):
-        return wetransfer(link)
-    elif any(
-        x in domain
-        for x in [
-            "terabox.com",
-            "nephobox.com",
-            "4funbox.com",
-            "mirrobox.com",
-            "momerybox.com",
-            "teraboxapp.com",
-            "1024tera.com",
-            "terabox.app",
-            "gibibox.com",
-            "goaibox.com",
-            "terasharelink.com",
-            "teraboxlink.com",
-            "freeterabox.com",
-            "1024terabox.com",
-            "teraboxshare.com",
-            "terafileshare.com",
-            "terabox.club",
-        ]
-    ):
-        return terabox(link)
-    elif any(
-        x in domain
-        for x in [
-            "filelions.co",
-            "filelions.site",
-            "filelions.live",
-            "filelions.to",
-            "mycloudz.cc",
-            "cabecabean.lol",
-            "filelions.online",
-            "embedwish.com",
-            "kitabmarkaz.xyz",
-            "wishfast.top",
-            "streamwish.to",
-            "kissmovies.net",
-        ]
-    ):
-        return filelions_and_streamwish(link)
-    elif any(x in domain for x in ["streamhub.ink", "streamhub.to"]):
-        return streamhub(link)
-    elif any(
-        x in domain
-        for x in [
-            "linkbox.to",
-            "lbx.to",
-            "teltobx.net",
-            "telbx.net",
-            "linkbox.cloud",
-        ]
-    ):
-        return linkBox(link)
-    elif is_share_link(link):
-        return filepress(link) if "filepress" in domain else sharer_scraper(link)
-    elif any(
-        x in domain
-        for x in [
-            "anonfiles.com",
-            "zippyshare.com",
-            "letsupload.io",
-            "hotfile.io",
-            "bayfiles.com",
-            "megaupload.nz",
-            "letsupload.cc",
-            "filechan.org",
-            "myfile.is",
-            "vshare.is",
-            "rapidshare.nu",
-            "lolabits.se",
-            "openload.cc",
-            "share-online.is",
-            "upvid.cc",
-            "uptobox.com",
-            "uptobox.fr",
-        ]
-    ):
-        raise DirectDownloadLinkException(f"ERROR: R.I.P {domain}")
-    else:
-        raise DirectDownloadLinkException(f"No Direct link function found for {link}")
 
 
 def get_captcha_token(session, params):
@@ -1820,3 +1625,147 @@ def swisstransfer(link):
         "total_size": total_size,
         "header": "User-Agent:Mozilla/5.0",
     }
+
+def _rip_handler(link):
+    domain = urlparse(link).hostname
+    raise DirectDownloadLinkException(f"ERROR: R.I.P {domain}")
+
+
+_DOMAIN_HANDLERS = {
+    "yadi.sk": yandex_disk,
+    "disk.yandex.": yandex_disk,
+    "buzzheavier.com": buzzheavier,
+    "devuploads": devuploads,
+    "lulacloud.com": lulacloud,
+    "uploadhaven": uploadhaven,
+    "fuckingfast.co": fuckingfast_dl,
+    "mediafile.cc": mediafile,
+    "mediafire.com": mediafire,
+    "osdn.net": osdn,
+    "github.com": github,
+    "transfer.it": transfer_it,
+    "hxfile.co": hxfile,
+    "1drv.ms": onedrive,
+    "pixeldrain.com": pixeldrain,
+    "pixeldra.in": pixeldrain,
+    "racaty": racaty,
+    "1fichier.com": fichier,
+    "solidfiles.com": solidfiles,
+    "krakenfiles.com": krakenfiles,
+    "upload.ee": uploadee,
+    "gofile.io": gofile,
+    "send.cm": send_cm,
+    "tmpsend.com": tmpsend,
+    "easyupload.io": easyupload,
+    "streamvid.net": streamvid,
+    "shrdsk.me": shrdsk,
+    "u.pcloud.link": pcloud,
+    "qiwi.gg": qiwi,
+    "mp4upload.com": mp4upload,
+    "berkasdrive.com": berkasdrive,
+    "swisstransfer.com": swisstransfer,
+    "akmfiles.com": akmfiles,
+    "akmfls.xyz": akmfiles,
+    "dood.watch": doods,
+    "doodstream.com": doods,
+    "dood.to": doods,
+    "dood.so": doods,
+    "dood.cx": doods,
+    "dood.la": doods,
+    "dood.ws": doods,
+    "dood.sh": doods,
+    "doodstream.co": doods,
+    "dood.pm": doods,
+    "dood.wf": doods,
+    "dood.re": doods,
+    "dood.video": doods,
+    "dooood.com": doods,
+    "dood.yt": doods,
+    "doods.yt": doods,
+    "dood.stream": doods,
+    "doods.pro": doods,
+    "ds2play.com": doods,
+    "d0o0d.com": doods,
+    "ds2video.com": doods,
+    "do0od.com": doods,
+    "d000d.com": doods,
+    "streamtape.com": streamtape,
+    "streamtape.co": streamtape,
+    "streamtape.cc": streamtape,
+    "streamtape.to": streamtape,
+    "streamtape.net": streamtape,
+    "streamta.pe": streamtape,
+    "streamtape.xyz": streamtape,
+    "wetransfer.com": wetransfer,
+    "we.tl": wetransfer,
+    "terabox.com": terabox,
+    "nephobox.com": terabox,
+    "4funbox.com": terabox,
+    "mirrobox.com": terabox,
+    "momerybox.com": terabox,
+    "teraboxapp.com": terabox,
+    "1024tera.com": terabox,
+    "terabox.app": terabox,
+    "gibibox.com": terabox,
+    "goaibox.com": terabox,
+    "terasharelink.com": terabox,
+    "teraboxlink.com": terabox,
+    "freeterabox.com": terabox,
+    "1024terabox.com": terabox,
+    "teraboxshare.com": terabox,
+    "terafileshare.com": terabox,
+    "terabox.club": terabox,
+    "filelions.co": filelions_and_streamwish,
+    "filelions.site": filelions_and_streamwish,
+    "filelions.live": filelions_and_streamwish,
+    "filelions.to": filelions_and_streamwish,
+    "mycloudz.cc": filelions_and_streamwish,
+    "cabecabean.lol": filelions_and_streamwish,
+    "filelions.online": filelions_and_streamwish,
+    "embedwish.com": filelions_and_streamwish,
+    "kitabmarkaz.xyz": filelions_and_streamwish,
+    "wishfast.top": filelions_and_streamwish,
+    "streamwish.to": filelions_and_streamwish,
+    "kissmovies.net": filelions_and_streamwish,
+    "streamhub.ink": streamhub,
+    "streamhub.to": streamhub,
+    "linkbox.to": linkBox,
+    "lbx.to": linkBox,
+    "teltobx.net": linkBox,
+    "telbx.net": linkBox,
+    "linkbox.cloud": linkBox,
+    "filepress": filepress,
+    "gdtot": sharer_scraper,
+    "filebee": sharer_scraper,
+    "appdrive": sharer_scraper,
+    "gdflix": sharer_scraper,
+    "anonfiles.com": _rip_handler,
+    "zippyshare.com": _rip_handler,
+    "letsupload.io": _rip_handler,
+    "hotfile.io": _rip_handler,
+    "bayfiles.com": _rip_handler,
+    "megaupload.nz": _rip_handler,
+    "letsupload.cc": _rip_handler,
+    "filechan.org": _rip_handler,
+    "myfile.is": _rip_handler,
+    "vshare.is": _rip_handler,
+    "rapidshare.nu": _rip_handler,
+    "lolabits.se": _rip_handler,
+    "openload.cc": _rip_handler,
+    "share-online.is": _rip_handler,
+    "upvid.cc": _rip_handler,
+    "uptobox.com": _rip_handler,
+    "uptobox.fr": _rip_handler,
+}
+
+def direct_link_generator(link):
+    """direct links generator"""
+    domain = urlparse(link).hostname
+    if not domain:
+        raise DirectDownloadLinkException("ERROR: Invalid URL")
+
+    for key, handler in _DOMAIN_HANDLERS.items():
+        if key in domain:
+            return handler(link)
+
+    raise DirectDownloadLinkException(f"No Direct link function found for {link}")
