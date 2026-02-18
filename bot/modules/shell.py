@@ -1,3 +1,4 @@
+import shlex
 from io import BytesIO
 
 from .. import LOGGER
@@ -12,7 +13,15 @@ async def run_shell(_, message):
         await send_message(message, "No command to execute was given.")
         return
     cmd = cmd[1]
-    stdout, stderr, _ = await cmd_exec(cmd, shell=True)
+    try:
+        cmd = shlex.split(cmd)
+    except Exception as e:
+        await send_message(message, f"Shell Error: {e}")
+        return
+    if not cmd:
+        await send_message(message, "No command to execute was given.")
+        return
+    stdout, stderr, _ = await cmd_exec(cmd, shell=False)
     reply = ""
     if len(stdout) != 0:
         reply += f"*Stdout*\n<code>{stdout}</code>\n"
