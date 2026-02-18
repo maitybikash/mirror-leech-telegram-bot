@@ -1,7 +1,7 @@
 from aiofiles import open as aiopen
 from aiofiles.os import path as aiopath
 from importlib import import_module
-from pymongo import AsyncMongoClient
+from pymongo import AsyncMongoClient, ReplaceOne
 from pymongo.server_api import ServerApi
 from pymongo.errors import PyMongoError
 
@@ -162,9 +162,12 @@ class DbManager:
     async def rss_update_all(self):
         if self._return:
             return
-        for user_id in list(rss_dict.keys()):
-            await self.db.rss[TgClient.ID].replace_one(
-                {"_id": user_id}, rss_dict[user_id], upsert=True
+        if rss_dict:
+            await self.db.rss[TgClient.ID].bulk_write(
+                [
+                    ReplaceOne({"_id": user_id}, rss_dict[user_id], upsert=True)
+                    for user_id in rss_dict
+                ]
             )
 
     async def rss_update(self, user_id):
