@@ -1,6 +1,7 @@
 from aiofiles.os import path as aiopath
 from base64 import b64encode
 from re import match as re_match
+from os import path as ospath
 
 from .. import LOGGER, bot_loop, task_dict_lock, DOWNLOAD_DIR
 from ..helper.ext_utils.bot_utils import (
@@ -135,7 +136,8 @@ class Mirror(TaskListener):
         self.thumbnail_layout = args["-tl"]
         self.as_doc = args["-doc"]
         self.as_med = args["-med"]
-        self.folder_name = f"/{args["-m"]}".rstrip("/") if len(args["-m"]) > 0 else ""
+        folder_name = ospath.basename(args["-m"].rstrip("/"))
+        self.folder_name = f"/{folder_name}" if folder_name and folder_name not in [".", ".."] else ""
         self.bot_trans = args["-bt"]
         self.user_trans = args["-ut"]
         self.ffmpeg_cmds = args["-ff"]
