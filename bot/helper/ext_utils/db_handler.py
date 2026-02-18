@@ -198,8 +198,8 @@ class DbManager:
         if await self.db.tasks[TgClient.ID].find_one():
             rows = self.db.tasks[TgClient.ID].find({})
             async for row in rows:
-                if row["cid"] in list(notifier_dict.keys()):
-                    if row["tag"] in list(notifier_dict[row["cid"]]):
+                if row["cid"] in notifier_dict:
+                    if row["tag"] in notifier_dict[row["cid"]]:
                         notifier_dict[row["cid"]][row["tag"]].append(row["_id"])
                     else:
                         notifier_dict[row["cid"]][row["tag"]] = [row["_id"]]
