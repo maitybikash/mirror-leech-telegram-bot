@@ -113,10 +113,12 @@ async def _qb_listener():
     while True:
         async with qb_listener_lock:
             try:
-                torrents = await TorrentManager.qbittorrent.torrents.info()
-                if len(torrents) == 0:
+                if not (
+                    hashes := [v["hash"] for v in qb_torrents.values() if v.get("hash")]
+                ):
                     intervals["qb"] = ""
                     break
+                torrents = await TorrentManager.qbittorrent.torrents.info(hashes=hashes)
                 for tor_info in torrents:
                     tag = tor_info.tags[0]
                     if tag not in qb_torrents:
@@ -188,9 +190,10 @@ async def _qb_listener():
         await sleep(3)
 
 
-async def on_download_start(tag):
+async def on_download_start(tag, hash_=None):
     async with qb_listener_lock:
         qb_torrents[tag] = {
+            "hash": hash_,
             "start_time": time(),
             "stalled_time": time(),
             "stop_dup_check": False,
