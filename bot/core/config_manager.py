@@ -2,8 +2,6 @@ from importlib import import_module
 from ast import literal_eval
 from os import getenv
 
-from bot import LOGGER
-
 
 class Config:
     AS_DOCUMENT = False
@@ -49,6 +47,9 @@ class Config:
     RSS_CHAT = ""
     RSS_DELAY = 600
     RSS_SIZE_LIMIT = 0
+    SABNZBD_HOST = "http://localhost"
+    SABNZBD_API_KEY = ""
+    SABNZBD_PORT = "8070"
     SEARCH_API_LINK = ""
     SEARCH_LIMIT = 0
     SEARCH_PLUGINS = []
@@ -159,6 +160,7 @@ class Config:
             "BASE_URL",
             "RCLONE_SERVE_URL",
             "SEARCH_API_LINK",
+            "SABNZBD_HOST",
         }:
             return converted_value.strip("/") if converted_value else ""
 
@@ -215,6 +217,8 @@ class Config:
 
     @classmethod
     def load(cls) -> None:
+        from bot import LOGGER
+
         if not cls._load_from_module():
             LOGGER.info(
                 "Config module not found, loading from environment variables..."
