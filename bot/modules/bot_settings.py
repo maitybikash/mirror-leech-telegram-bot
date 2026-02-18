@@ -1,6 +1,7 @@
 from aiofiles import open as aiopen
 from aiofiles.os import remove, rename, path as aiopath
 from aioshutil import rmtree
+from ast import literal_eval
 from asyncio import (
     create_subprocess_exec,
     create_subprocess_shell,
@@ -238,16 +239,43 @@ async def update_buttons(message, key=None, edit_type=None):
     await edit_message(message, msg, button)
 
 
+def get_input_value(message):
+    handler_dict[message.chat.id] = False
+    return str(message.text)
+
+
+def parse_boolean(value):
+    if value.lower() == "true":
+        return True
+    if value.lower() == "false":
+        return False
+    return value
+
+
+def parse_generic_types(value):
+    if value.isdigit():
+        return int(value)
+    if value.startswith("[") and value.endswith("]"):
+        try:
+            return literal_eval(value)
+        except:
+            pass
+    if value.startswith("{") and value.endswith("}"):
+        try:
+            return literal_eval(value)
+        except:
+            pass
+    return value
+
+
 @new_task
 async def edit_variable(_, message, pre_message, key):
-    handler_dict[message.chat.id] = False
-    value = str(message.text)
-    if value.lower() == "true":
-        value = True
-    elif value.lower() == "false":
-        value = False
-        if key == "INCOMPLETE_TASK_NOTIFIER" and Config.DATABASE_URL:
-            await database.trunc_table("tasks")
+    value = get_input_value(message)
+    value = parse_boolean(value)
+    if value is False and key == "INCOMPLETE_TASK_NOTIFIER" and Config.DATABASE_URL:
+        await database.trunc_table("tasks")
+    if isinstance(value, bool):
+        pass
     elif key == "STATUS_UPDATE_INTERVAL":
         value = int(value)
         if len(task_dict) != 0 and (st := intervals["status"]):
@@ -307,12 +335,8 @@ async def edit_variable(_, message, pre_message, key):
         aid = value.split()
         for id_ in aid:
             sudo_users.append(int(id_.strip()))
-    elif value.isdigit():
-        value = int(value)
-    elif value.startswith("[") and value.endswith("]"):
-        value = eval(value)
-    elif value.startswith("{") and value.endswith("}"):
-        value = eval(value)
+    else:
+        value = parse_generic_types(value)
     Config.set(key, value)
     await update_buttons(pre_message, "var")
     await delete_message(message)
@@ -339,8 +363,7 @@ async def edit_variable(_, message, pre_message, key):
 
 @new_task
 async def edit_aria(_, message, pre_message, key):
-    handler_dict[message.chat.id] = False
-    value = str(message.text)
+    value = get_input_value(message)
     if key == "newkey":
         key, value = [x.strip() for x in value.split(":", 1)]
     elif value.lower() == "true":
@@ -355,12 +378,10 @@ async def edit_aria(_, message, pre_message, key):
 
 @new_task
 async def edit_qbit(_, message, pre_message, key):
-    handler_dict[message.chat.id] = False
-    value = str(message.text)
-    if value.lower() == "true":
-        value = True
-    elif value.lower() == "false":
-        value = False
+    value = get_input_value(message)
+    value = parse_boolean(value)
+    if isinstance(value, bool):
+        pass
     elif key == "max_ratio":
         value = float(value)
     elif value.isdigit():
@@ -374,13 +395,12 @@ async def edit_qbit(_, message, pre_message, key):
 
 @new_task
 async def edit_nzb(_, message, pre_message, key):
-    handler_dict[message.chat.id] = False
-    value = str(message.text)
+    value = get_input_value(message)
     if value.isdigit():
         value = int(value)
     elif value.startswith("[") and value.endswith("]"):
         try:
-            value = ",".join(eval(value))
+            value = ",".join(literal_eval(value))
         except Exception as e:
             LOGGER.error(e)
             await update_buttons(pre_message, "nzb")
@@ -394,12 +414,11 @@ async def edit_nzb(_, message, pre_message, key):
 
 @new_task
 async def edit_nzb_server(_, message, pre_message, key, index=0):
-    handler_dict[message.chat.id] = False
-    value = str(message.text)
+    value = get_input_value(message)
     if key == "newser":
         if value.startswith("{") and value.endswith("}"):
             try:
-                value = eval(value)
+                value = literal_eval(value)
             except:
                 await send_message(message, "Invalid dict format!")
                 await update_buttons(pre_message, "nzbserver")
