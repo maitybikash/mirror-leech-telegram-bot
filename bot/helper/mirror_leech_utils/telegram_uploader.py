@@ -356,12 +356,7 @@ class TelegramUploader:
         )
         return
 
-    @retry(
-        wait=wait_exponential(multiplier=2, min=4, max=8),
-        stop=stop_after_attempt(3),
-        retry=retry_if_exception_type(Exception),
-    )
-    async def _upload_file(self, cap_mono, file, o_path, force_document=False):
+    async def _get_thumbnail(self, file, is_image, is_audio, is_video):
         if (
             self._thumb is not None
             and not await aiopath.exists(self._thumb)
@@ -369,19 +364,106 @@ class TelegramUploader:
         ):
             self._thumb = None
         thumb = self._thumb
+        if not is_image and thumb is None:
+            file_name = ospath.splitext(file)[0]
+            thumb_path = f"{self._path}/yt-dlp-thumb/{file_name}.jpg"
+            if await aiopath.isfile(thumb_path):
+                thumb = thumb_path
+            elif await aiopath.isfile(thumb_path.replace("/yt-dlp-thumb", "")):
+                thumb = thumb_path.replace("/yt-dlp-thumb", "")
+            elif is_audio and not is_video:
+                thumb = await get_audio_thumbnail(self._up_path)
+        return thumb
+
+    async def _upload_as_document(self, cap_mono, thumb, is_video):
+        if is_video and thumb is None:
+            thumb = await get_video_thumbnail(self._up_path, None)
+
+        if self._listener.is_cancelled:
+            return thumb
+        if thumb == "none":
+            thumb = None
+        self._sent_msg = await self._sent_msg.reply_document(
+            document=self._up_path,
+            thumb=thumb,
+            caption=cap_mono,
+            force_document=True,
+            disable_notification=True,
+            progress=self._upload_progress,
+        )
+        return thumb
+
+    async def _upload_as_video(self, cap_mono, thumb):
+        duration = (await get_media_info(self._up_path))[0]
+        if thumb is None and self._listener.thumbnail_layout:
+            thumb = await get_multiple_frames_thumbnail(
+                self._up_path,
+                self._listener.thumbnail_layout,
+                self._listener.screen_shots,
+            )
+        if thumb is None:
+            thumb = await get_video_thumbnail(self._up_path, duration)
+        if thumb is not None and thumb != "none":
+            with Image.open(thumb) as img:
+                width, height = img.size
+        else:
+            width = 480
+            height = 320
+        if self._listener.is_cancelled:
+            return thumb
+        if thumb == "none":
+            thumb = None
+        self._sent_msg = await self._sent_msg.reply_video(
+            video=self._up_path,
+            caption=cap_mono,
+            duration=duration,
+            width=width,
+            height=height,
+            thumb=thumb,
+            supports_streaming=True,
+            disable_notification=True,
+            progress=self._upload_progress,
+        )
+        return thumb
+
+    async def _upload_as_audio(self, cap_mono, thumb):
+        duration, artist, title = await get_media_info(self._up_path)
+        if self._listener.is_cancelled:
+            return
+        if thumb == "none":
+            thumb = None
+        self._sent_msg = await self._sent_msg.reply_audio(
+            audio=self._up_path,
+            caption=cap_mono,
+            duration=duration,
+            performer=artist,
+            title=title,
+            thumb=thumb,
+            disable_notification=True,
+            progress=self._upload_progress,
+        )
+
+    async def _upload_as_photo(self, cap_mono):
+        if self._listener.is_cancelled:
+            return
+        self._sent_msg = await self._sent_msg.reply_photo(
+            photo=self._up_path,
+            caption=cap_mono,
+            disable_notification=True,
+            progress=self._upload_progress,
+        )
+
+    @retry(
+        wait=wait_exponential(multiplier=2, min=4, max=8),
+        stop=stop_after_attempt(3),
+        retry=retry_if_exception_type(Exception),
+    )
+    async def _upload_file(self, cap_mono, file, o_path, force_document=False):
         self._is_corrupted = False
+        key = None
         try:
             is_video, is_audio, is_image = await get_document_type(self._up_path)
-
-            if not is_image and thumb is None:
-                file_name = ospath.splitext(file)[0]
-                thumb_path = f"{self._path}/yt-dlp-thumb/{file_name}.jpg"
-                if await aiopath.isfile(thumb_path):
-                    thumb = thumb_path
-                elif await aiopath.isfile(thumb_path.replace("/yt-dlp-thumb", "")):
-                    thumb = thumb_path.replace("/yt-dlp-thumb", "")
-                elif is_audio and not is_video:
-                    thumb = await get_audio_thumbnail(self._up_path)
+            thumb = await self._get_thumbnail(file, is_image, is_audio, is_video)
 
             if (
                 self._listener.as_doc
@@ -389,89 +471,26 @@ class TelegramUploader:
                 or (not is_video and not is_audio and not is_image)
             ):
                 key = "documents"
-                if is_video and thumb is None:
-                    thumb = await get_video_thumbnail(self._up_path, None)
-
-                if self._listener.is_cancelled:
-                    return
-                if thumb == "none":
-                    thumb = None
-                self._sent_msg = await self._sent_msg.reply_document(
-                    document=self._up_path,
-                    thumb=thumb,
-                    caption=cap_mono,
-                    force_document=True,
-                    disable_notification=True,
-                    progress=self._upload_progress,
-                )
+                thumb = await self._upload_as_document(cap_mono, thumb, is_video)
             elif is_video:
                 key = "videos"
-                duration = (await get_media_info(self._up_path))[0]
-                if thumb is None and self._listener.thumbnail_layout:
-                    thumb = await get_multiple_frames_thumbnail(
-                        self._up_path,
-                        self._listener.thumbnail_layout,
-                        self._listener.screen_shots,
-                    )
-                if thumb is None:
-                    thumb = await get_video_thumbnail(self._up_path, duration)
-                if thumb is not None and thumb != "none":
-                    with Image.open(thumb) as img:
-                        width, height = img.size
-                else:
-                    width = 480
-                    height = 320
-                if self._listener.is_cancelled:
-                    return
-                if thumb == "none":
-                    thumb = None
-                self._sent_msg = await self._sent_msg.reply_video(
-                    video=self._up_path,
-                    caption=cap_mono,
-                    duration=duration,
-                    width=width,
-                    height=height,
-                    thumb=thumb,
-                    supports_streaming=True,
-                    disable_notification=True,
-                    progress=self._upload_progress,
-                )
+                thumb = await self._upload_as_video(cap_mono, thumb)
             elif is_audio:
                 key = "audios"
-                duration, artist, title = await get_media_info(self._up_path)
-                if self._listener.is_cancelled:
-                    return
-                if thumb == "none":
-                    thumb = None
-                self._sent_msg = await self._sent_msg.reply_audio(
-                    audio=self._up_path,
-                    caption=cap_mono,
-                    duration=duration,
-                    performer=artist,
-                    title=title,
-                    thumb=thumb,
-                    disable_notification=True,
-                    progress=self._upload_progress,
-                )
+                await self._upload_as_audio(cap_mono, thumb)
             else:
                 key = "photos"
-                if self._listener.is_cancelled:
-                    return
-                self._sent_msg = await self._sent_msg.reply_photo(
-                    photo=self._up_path,
-                    caption=cap_mono,
-                    disable_notification=True,
-                    progress=self._upload_progress,
-                )
+                await self._upload_as_photo(cap_mono)
+
+            if self._listener.is_cancelled:
+                return
 
             if (
-                not self._listener.is_cancelled
-                and self._media_group
+                self._media_group
                 and (self._sent_msg.video or self._sent_msg.document)
             ):
                 key = "documents" if self._sent_msg.document else "videos"
                 if match := re_match(r".+(?=\.0*\d+$)|.+(?=\.part\d+\..+$)", o_path):
-
                     pname = match.group(0)
                     if pname in self._media_dict[key].keys():
                         self._media_dict[key][pname].append(
