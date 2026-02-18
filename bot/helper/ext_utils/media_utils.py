@@ -76,6 +76,14 @@ async def get_document_type(path):
     mime_type = await sync_to_async(get_mime_type, path)
     if mime_type.startswith("image"):
         return False, False, True
+
+    if (
+        not mime_type.startswith("video")
+        and not mime_type.startswith("audio")
+        and not mime_type.endswith("octet-stream")
+    ):
+        return False, False, False
+
     try:
         result = await cmd_exec(
             [
