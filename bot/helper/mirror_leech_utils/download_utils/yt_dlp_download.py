@@ -1,6 +1,5 @@
 from logging import getLogger
 from os import path as ospath, listdir
-from re import search as re_search
 from secrets import token_urlsafe
 from yt_dlp import YoutubeDL, DownloadError
 
@@ -21,15 +20,7 @@ class MyLogger:
         self._listener = listener
 
     def debug(self, msg):
-        # Hack to fix changing extension
-        if not self._obj.is_playlist:
-            if match := re_search(
-                r".Merger..Merging formats into..(.*?).$", msg
-            ) or re_search(r".ExtractAudio..Destination..(.*?)$", msg):
-                LOGGER.info(msg)
-                newname = match.group(1)
-                newname = newname.rsplit("/", 1)[-1]
-                self._listener.name = newname
+        pass
 
     @staticmethod
     def warning(msg):
@@ -55,6 +46,7 @@ class YoutubeDLHelper:
         self.keep_thumb = False
         self.opts = {
             "progress_hooks": [self._on_download_progress],
+            "postprocessor_hooks": [self._on_postprocessor_hook],
             "logger": MyLogger(self, self._listener),
             "usenetrc": True,
             "cookiefile": "cookies.txt",
@@ -119,6 +111,17 @@ class YoutubeDLHelper:
                 self._progress = (self._downloaded_bytes / self._listener.size) * 100
             except:
                 pass
+
+    def _on_postprocessor_hook(self, d):
+        if self._listener.is_cancelled:
+            raise ValueError("Cancelling...")
+        if d["status"] == "finished":
+            if not self.is_playlist:
+                info = d.get("info_dict")
+                if info:
+                    filepath = info.get("filepath")
+                    if filepath:
+                        self._listener.name = ospath.basename(filepath)
 
     async def _on_download_start(self, from_queue=False):
         async with task_dict_lock:
