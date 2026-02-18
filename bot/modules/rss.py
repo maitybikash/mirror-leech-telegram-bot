@@ -470,93 +470,112 @@ async def event_handler(client, query, pfunc):
     client.remove_handler(*handler)
 
 
-@new_task
-async def rss_listener(client, query):
+async def rss_close(client, query):
+    user_id = query.from_user.id
+    message = query.message
+    await query.answer()
+    handler_dict[user_id] = False
+    await delete_message(message.reply_to_message)
+    await delete_message(message)
+
+
+async def rss_back(client, query):
+    user_id = query.from_user.id
+    await query.answer()
+    handler_dict[user_id] = False
+    await update_rss_menu(query)
+
+
+async def rss_sub_callback(client, query):
+    user_id = query.from_user.id
+    message = query.message
+    await query.answer()
+    handler_dict[user_id] = False
+    buttons = ButtonMaker()
+    buttons.data_button("Back", f"rss back {user_id}")
+    buttons.data_button("Close", f"rss close {user_id}")
+    button = buttons.build_menu(2)
+    await edit_message(message, RSS_HELP_MESSAGE, button)
+    pfunc = partial(rss_sub, pre_event=query)
+    await event_handler(client, query, pfunc)
+
+
+async def rss_list_callback(client, query):
+    user_id = query.from_user.id
+    data = query.data.split()
+    handler_dict[user_id] = False
+    if len(rss_dict.get(int(data[2]), {})) == 0:
+        await query.answer(text="No subscriptions!", show_alert=True)
+    else:
+        await query.answer()
+        start = int(data[3])
+        await rss_list(query, start)
+
+
+async def rss_get_callback(client, query):
     user_id = query.from_user.id
     message = query.message
     data = query.data.split()
-    if int(data[2]) != user_id and not await CustomFilters.sudo("", query):
-        await query.answer(
-            text="You don't have permission to use these buttons!", show_alert=True
-        )
-    elif data[1] == "close":
+    handler_dict[user_id] = False
+    if len(rss_dict.get(int(data[2]), {})) == 0:
+        await query.answer(text="No subscriptions!", show_alert=True)
+    else:
         await query.answer()
-        handler_dict[user_id] = False
-        await delete_message(message.reply_to_message)
-        await delete_message(message)
-    elif data[1] == "back":
-        await query.answer()
-        handler_dict[user_id] = False
-        await update_rss_menu(query)
-    elif data[1] == "sub":
-        await query.answer()
-        handler_dict[user_id] = False
         buttons = ButtonMaker()
         buttons.data_button("Back", f"rss back {user_id}")
         buttons.data_button("Close", f"rss close {user_id}")
         button = buttons.build_menu(2)
-        await edit_message(message, RSS_HELP_MESSAGE, button)
-        pfunc = partial(rss_sub, pre_event=query)
+        await edit_message(
+            message,
+            "Send one title with value separated by space get last X items.\nTitle Value\nTimeout: 60 sec.",
+            button,
+        )
+        pfunc = partial(rss_get, pre_event=query)
         await event_handler(client, query, pfunc)
-    elif data[1] == "list":
-        handler_dict[user_id] = False
-        if len(rss_dict.get(int(data[2]), {})) == 0:
-            await query.answer(text="No subscriptions!", show_alert=True)
-        else:
-            await query.answer()
-            start = int(data[3])
-            await rss_list(query, start)
-    elif data[1] == "get":
-        handler_dict[user_id] = False
-        if len(rss_dict.get(int(data[2]), {})) == 0:
-            await query.answer(text="No subscriptions!", show_alert=True)
-        else:
-            await query.answer()
-            buttons = ButtonMaker()
-            buttons.data_button("Back", f"rss back {user_id}")
-            buttons.data_button("Close", f"rss close {user_id}")
-            button = buttons.build_menu(2)
-            await edit_message(
-                message,
-                "Send one title with value separated by space get last X items.\nTitle Value\nTimeout: 60 sec.",
-                button,
-            )
-            pfunc = partial(rss_get, pre_event=query)
-            await event_handler(client, query, pfunc)
-    elif data[1] in ["unsubscribe", "pause", "resume"]:
-        handler_dict[user_id] = False
-        if len(rss_dict.get(int(data[2]), {})) == 0:
-            await query.answer(text="No subscriptions!", show_alert=True)
-        else:
-            await query.answer()
-            buttons = ButtonMaker()
-            buttons.data_button("Back", f"rss back {user_id}")
-            if data[1] == "pause":
-                buttons.data_button("Pause AllMyFeeds", f"rss uallpause {user_id}")
-            elif data[1] == "resume":
-                buttons.data_button("Resume AllMyFeeds", f"rss uallresume {user_id}")
-            elif data[1] == "unsubscribe":
-                buttons.data_button("Unsub AllMyFeeds", f"rss uallunsub {user_id}")
-            buttons.data_button("Close", f"rss close {user_id}")
-            button = buttons.build_menu(2)
-            await edit_message(
-                message,
-                f"Send one or more rss titles separated by space to {data[1]}.\nTimeout: 60 sec.",
-                button,
-            )
-            pfunc = partial(rss_update, pre_event=query, state=data[1])
-            await event_handler(client, query, pfunc)
-    elif data[1] == "edit":
-        handler_dict[user_id] = False
-        if len(rss_dict.get(int(data[2]), {})) == 0:
-            await query.answer(text="No subscriptions!", show_alert=True)
-        else:
-            await query.answer()
-            buttons = ButtonMaker()
-            buttons.data_button("Back", f"rss back {user_id}")
-            buttons.data_button("Close", f"rss close {user_id}")
-            button = buttons.build_menu(2)
-            msg = """Send one or more rss titles with new filters or command separated by new line.
+
+
+async def rss_state_callback(client, query):
+    user_id = query.from_user.id
+    message = query.message
+    data = query.data.split()
+    handler_dict[user_id] = False
+    if len(rss_dict.get(int(data[2]), {})) == 0:
+        await query.answer(text="No subscriptions!", show_alert=True)
+    else:
+        await query.answer()
+        buttons = ButtonMaker()
+        buttons.data_button("Back", f"rss back {user_id}")
+        if data[1] == "pause":
+            buttons.data_button("Pause AllMyFeeds", f"rss uallpause {user_id}")
+        elif data[1] == "resume":
+            buttons.data_button("Resume AllMyFeeds", f"rss uallresume {user_id}")
+        elif data[1] == "unsubscribe":
+            buttons.data_button("Unsub AllMyFeeds", f"rss uallunsub {user_id}")
+        buttons.data_button("Close", f"rss close {user_id}")
+        button = buttons.build_menu(2)
+        await edit_message(
+            message,
+            f"Send one or more rss titles separated by space to {data[1]}.\nTimeout: 60 sec.",
+            button,
+        )
+        pfunc = partial(rss_update, pre_event=query, state=data[1])
+        await event_handler(client, query, pfunc)
+
+
+async def rss_edit_callback(client, query):
+    user_id = query.from_user.id
+    message = query.message
+    data = query.data.split()
+    handler_dict[user_id] = False
+    if len(rss_dict.get(int(data[2]), {})) == 0:
+        await query.answer(text="No subscriptions!", show_alert=True)
+    else:
+        await query.answer()
+        buttons = ButtonMaker()
+        buttons.data_button("Back", f"rss back {user_id}")
+        buttons.data_button("Close", f"rss close {user_id}")
+        button = buttons.build_menu(2)
+        msg = """Send one or more rss titles with new filters or command separated by new line.
 Examples:
 Title1 -c mirror -up remote:path/subdir -exf none -inf 1080 or 720 -stv true
 Title2 -c none -inf none -stv false
@@ -564,99 +583,155 @@ Title3 -c mirror -rcf xxx -up xxx -z pswd -stv false
 Note: Only what you provide will be edited, the rest will be the same like example 2: exf will stay same as it is.
 Timeout: 60 sec. Argument -c for command and arguments
             """
-            await edit_message(message, msg, button)
-            pfunc = partial(rss_edit, pre_event=query)
-            await event_handler(client, query, pfunc)
-    elif data[1].startswith("uall"):
-        handler_dict[user_id] = False
-        if len(rss_dict.get(int(data[2]), {})) == 0:
-            await query.answer(text="No subscriptions!", show_alert=True)
-            return
-        await query.answer()
-        if data[1].endswith("unsub"):
-            async with rss_dict_lock:
-                del rss_dict[int(data[2])]
-            await database.rss_delete(int(data[2]))
-            await update_rss_menu(query)
-        elif data[1].endswith("pause"):
-            async with rss_dict_lock:
-                for info in rss_dict[int(data[2])].values():
-                    info["paused"] = True
-            await database.rss_update(int(data[2]))
-        elif data[1].endswith("resume"):
-            async with rss_dict_lock:
-                for info in rss_dict[int(data[2])].values():
-                    info["paused"] = False
-            if scheduler.state == 2:
-                scheduler.resume()
-            await database.rss_update(int(data[2]))
+        await edit_message(message, msg, button)
+        pfunc = partial(rss_edit, pre_event=query)
+        await event_handler(client, query, pfunc)
+
+
+async def rss_uall_callback(client, query):
+    user_id = query.from_user.id
+    data = query.data.split()
+    handler_dict[user_id] = False
+    if len(rss_dict.get(int(data[2]), {})) == 0:
+        await query.answer(text="No subscriptions!", show_alert=True)
+        return
+    await query.answer()
+    if data[1].endswith("unsub"):
+        async with rss_dict_lock:
+            del rss_dict[int(data[2])]
+        await database.rss_delete(int(data[2]))
         await update_rss_menu(query)
-    elif data[1].startswith("all"):
-        if len(rss_dict) == 0:
-            await query.answer(text="No subscriptions!", show_alert=True)
-            return
-        await query.answer()
-        if data[1].endswith("unsub"):
-            async with rss_dict_lock:
-                rss_dict.clear()
-            await database.trunc_table("rss")
-            await update_rss_menu(query)
-        elif data[1].endswith("pause"):
-            async with rss_dict_lock:
-                for user_feeds in rss_dict.values():
-                    for feed in user_feeds.values():
-                        feed["paused"] = True
-            if scheduler.running:
-                scheduler.pause()
-            await database.rss_update_all()
-        elif data[1].endswith("resume"):
-            async with rss_dict_lock:
-                for user_feeds in rss_dict.values():
-                    for feed in user_feeds.values():
-                        feed["paused"] = False
-            if scheduler.state == 2:
-                scheduler.resume()
-            elif not scheduler.running:
-                add_job()
-                scheduler.start()
-                await update_rss_menu(query)
-            await database.rss_update_all()
-    elif data[1] == "deluser":
-        if len(rss_dict) == 0:
-            await query.answer(text="No subscriptions!", show_alert=True)
-        else:
-            await query.answer()
-            buttons = ButtonMaker()
-            buttons.data_button("Back", f"rss back {user_id}")
-            buttons.data_button("Close", f"rss close {user_id}")
-            button = buttons.build_menu(2)
-            msg = "Send one or more user_id separated by space to delete their resources.\nTimeout: 60 sec."
-            await edit_message(message, msg, button)
-            pfunc = partial(rss_delete, pre_event=query)
-            await event_handler(client, query, pfunc)
-    elif data[1] == "listall":
-        if not rss_dict:
-            await query.answer(text="No subscriptions!", show_alert=True)
-        else:
-            await query.answer()
-            start = int(data[3])
-            await rss_list(query, start, all_users=True)
-    elif data[1] == "shutdown":
+    elif data[1].endswith("pause"):
+        async with rss_dict_lock:
+            for info in rss_dict[int(data[2])].values():
+                info["paused"] = True
+        await database.rss_update(int(data[2]))
+    elif data[1].endswith("resume"):
+        async with rss_dict_lock:
+            for info in rss_dict[int(data[2])].values():
+                info["paused"] = False
+        if scheduler.state == 2:
+            scheduler.resume()
+        await database.rss_update(int(data[2]))
+    await update_rss_menu(query)
+
+
+async def rss_all_callback(client, query):
+    data = query.data.split()
+    if len(rss_dict) == 0:
+        await query.answer(text="No subscriptions!", show_alert=True)
+        return
+    await query.answer()
+    if data[1].endswith("unsub"):
+        async with rss_dict_lock:
+            rss_dict.clear()
+        await database.trunc_table("rss")
+        await update_rss_menu(query)
+    elif data[1].endswith("pause"):
+        async with rss_dict_lock:
+            for user_feeds in rss_dict.values():
+                for feed in user_feeds.values():
+                    feed["paused"] = True
         if scheduler.running:
-            await query.answer()
-            scheduler.shutdown(wait=False)
-            await sleep(0.5)
-            await update_rss_menu(query)
-        else:
-            await query.answer(text="Already Stopped!", show_alert=True)
-    elif data[1] == "start":
-        if not scheduler.running:
-            await query.answer()
+            scheduler.pause()
+        await database.rss_update_all()
+    elif data[1].endswith("resume"):
+        async with rss_dict_lock:
+            for user_feeds in rss_dict.values():
+                for feed in user_feeds.values():
+                    feed["paused"] = False
+        if scheduler.state == 2:
+            scheduler.resume()
+        elif not scheduler.running:
             add_job()
             scheduler.start()
             await update_rss_menu(query)
-        else:
-            await query.answer(text="Already Running!", show_alert=True)
+        await database.rss_update_all()
+
+
+async def rss_deluser_callback(client, query):
+    user_id = query.from_user.id
+    message = query.message
+    if len(rss_dict) == 0:
+        await query.answer(text="No subscriptions!", show_alert=True)
+    else:
+        await query.answer()
+        buttons = ButtonMaker()
+        buttons.data_button("Back", f"rss back {user_id}")
+        buttons.data_button("Close", f"rss close {user_id}")
+        button = buttons.build_menu(2)
+        msg = "Send one or more user_id separated by space to delete their resources.\nTimeout: 60 sec."
+        await edit_message(message, msg, button)
+        pfunc = partial(rss_delete, pre_event=query)
+        await event_handler(client, query, pfunc)
+
+
+async def rss_listall_callback(client, query):
+    data = query.data.split()
+    if not rss_dict:
+        await query.answer(text="No subscriptions!", show_alert=True)
+    else:
+        await query.answer()
+        start = int(data[3])
+        await rss_list(query, start, all_users=True)
+
+
+async def rss_shutdown_callback(client, query):
+    if scheduler.running:
+        await query.answer()
+        scheduler.shutdown(wait=False)
+        await sleep(0.5)
+        await update_rss_menu(query)
+    else:
+        await query.answer(text="Already Stopped!", show_alert=True)
+
+
+async def rss_start_callback(client, query):
+    if not scheduler.running:
+        await query.answer()
+        add_job()
+        scheduler.start()
+        await update_rss_menu(query)
+    else:
+        await query.answer(text="Already Running!", show_alert=True)
+
+
+RSS_HANDLERS = {
+    "close": rss_close,
+    "back": rss_back,
+    "sub": rss_sub_callback,
+    "list": rss_list_callback,
+    "get": rss_get_callback,
+    "unsubscribe": rss_state_callback,
+    "pause": rss_state_callback,
+    "resume": rss_state_callback,
+    "edit": rss_edit_callback,
+    "uallunsub": rss_uall_callback,
+    "uallpause": rss_uall_callback,
+    "uallresume": rss_uall_callback,
+    "allunsub": rss_all_callback,
+    "allpause": rss_all_callback,
+    "allresume": rss_all_callback,
+    "deluser": rss_deluser_callback,
+    "listall": rss_listall_callback,
+    "shutdown": rss_shutdown_callback,
+    "start": rss_start_callback,
+}
+
+
+@new_task
+async def rss_listener(client, query):
+    user_id = query.from_user.id
+    data = query.data.split()
+    if int(data[2]) != user_id and not await CustomFilters.sudo("", query):
+        await query.answer(
+            text="You don't have permission to use these buttons!", show_alert=True
+        )
+        return
+
+    command = data[1]
+    if command in RSS_HANDLERS:
+        await RSS_HANDLERS[command](client, query)
 
 
 async def rss_monitor():
