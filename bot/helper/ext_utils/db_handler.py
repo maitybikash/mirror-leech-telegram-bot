@@ -198,16 +198,20 @@ class DbManager:
         notifier_dict = {}
         if self._return:
             return notifier_dict
-        if await self.db.tasks[TgClient.ID].find_one():
-            rows = self.db.tasks[TgClient.ID].find({})
-            async for row in rows:
-                if row["cid"] in notifier_dict:
-                    if row["tag"] in notifier_dict[row["cid"]]:
-                        notifier_dict[row["cid"]][row["tag"]].append(row["_id"])
-                    else:
-                        notifier_dict[row["cid"]][row["tag"]] = [row["_id"]]
-                else:
-                    notifier_dict[row["cid"]] = {row["tag"]: [row["_id"]]}
+        pipeline = [
+            {
+                "$group": {
+                    "_id": {"cid": "$cid", "tag": "$tag"},
+                    "tasks": {"$push": "$_id"},
+                }
+            }
+        ]
+        async for row in self.db.tasks[TgClient.ID].aggregate(pipeline):
+            cid = row["_id"]["cid"]
+            tag = row["_id"]["tag"]
+            if cid not in notifier_dict:
+                notifier_dict[cid] = {}
+            notifier_dict[cid][tag] = row["tasks"]
         await self.db.tasks[TgClient.ID].drop()
         return notifier_dict
 
