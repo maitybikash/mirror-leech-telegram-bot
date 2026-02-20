@@ -1,3 +1,6 @@
+import logging
+import hmac
+import hashlib
 from importlib import import_module
 from ast import literal_eval
 from os import getenv
@@ -217,15 +220,23 @@ class Config:
 
     @classmethod
     def load(cls) -> None:
-        from bot import LOGGER
-
         if not cls._load_from_module():
-            LOGGER.info(
+            logging.getLogger(__name__).info(
                 "Config module not found, loading from environment variables..."
             )
             cls._load_from_env()
 
         cls._validate_required_config()
+
+    @classmethod
+    def get_pin(cls, gid: str) -> str:
+        key = cls.TELEGRAM_HASH
+        if not key:
+            key = "secret"
+
+        key_bytes = str(key).encode()
+        gid_bytes = str(gid).encode()
+        return hmac.new(key_bytes, gid_bytes, hashlib.sha256).hexdigest()[:6]
 
     @classmethod
     def load_dict(cls, config_dict) -> None:
