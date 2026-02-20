@@ -8,6 +8,7 @@ from inspect import isawaitable
 
 from .. import LOGGER
 from ..core.telegram_manager import TgClient
+from ..core.config_manager import Config
 from ..helper.ext_utils.bot_utils import sync_to_async, new_task
 from ..helper.telegram_helper.message_utils import send_file, send_message
 
@@ -61,6 +62,9 @@ def cleanup_code(code):
 
 async def do(func, message):
     log_input(message)
+    user_id = message.from_user.id if message.from_user else message.sender_chat.id
+    if user_id != Config.OWNER_ID:
+        return
     content = message.text.split(maxsplit=1)[-1]
     body = cleanup_code(content)
     env = namespace_of(message)
@@ -130,6 +134,9 @@ async def do(func, message):
 @new_task
 async def clear(_, message):
     log_input(message)
+    user_id = message.from_user.id if message.from_user else message.sender_chat.id
+    if user_id != Config.OWNER_ID:
+        return
     global namespaces
     if message.chat.id in namespaces:
         del namespaces[message.chat.id]
