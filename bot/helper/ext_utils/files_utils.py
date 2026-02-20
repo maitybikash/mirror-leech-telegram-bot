@@ -1,3 +1,4 @@
+from shlex import quote
 from aioshutil import rmtree as aiormtree, move
 from asyncio import create_subprocess_exec, wait_for
 from asyncio.subprocess import PIPE
@@ -257,7 +258,7 @@ async def join_files(opath):
             exists = True
             final_name = file_.rsplit(".", 1)[0]
             fpath = f"{opath}/{final_name}"
-            cmd = f'cat "{fpath}."* > "{fpath}"'
+            cmd = f'cat {quote(fpath)}.* > {quote(fpath)}'
             _, stderr, code = await cmd_exec(cmd, True)
             if code != 0:
                 LOGGER.error(f"Failed to join {final_name}, stderr: {stderr}")
