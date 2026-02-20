@@ -1083,20 +1083,6 @@ def mediafireFolder(url):
 
 
 @direct_link_generator_exception
-def cf_bypass(url):
-    "DO NOT ABUSE THIS"
-    data = {"cmd": "request.get", "url": url, "maxTimeout": 60000}
-    _json = post(
-        "https://cf.jmdkh.eu.org/v1",
-        headers={"Content-Type": "application/json"},
-        json=data,
-    ).json()
-    if _json["status"] == "ok":
-        return _json["solution"]["response"]
-    raise DirectDownloadLinkException("ERROR: Con't bypass cloudflare")
-
-
-@direct_link_generator_exception
 def send_cm_file(url, file_id=None):
     if "::" in url:
         _password = url.split("::")[-1]
@@ -1145,7 +1131,7 @@ def send_cm(url):
         details["title"] = splitted_url[5]
     else:
         details["title"] = splitted_url[-1]
-    session = Session()
+    session = create_scraper()
 
     def __collectFolders(html):
         folders = []
@@ -1190,7 +1176,7 @@ def send_cm(url):
     def __writeContents(html_text, folderPath=""):
         folders = __collectFolders(html_text)
         for folder in folders:
-            _html = HTML(cf_bypass(folder["folder_link"]))
+            _html = HTML(session.get(folder["folder_link"]).text)
             __writeContents(_html, ospath.join(folderPath, folder["folder_name"]))
         files = __getFiles(html_text)
         for file in files:
@@ -1201,7 +1187,7 @@ def send_cm(url):
             details["contents"].append(item)
 
     try:
-        mainHtml = HTML(cf_bypass(url))
+        mainHtml = HTML(session.get(url).text)
     except DirectDownloadLinkException as e:
         raise e
     except Exception as e:
