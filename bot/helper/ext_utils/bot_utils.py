@@ -57,7 +57,7 @@ def create_help_buttons():
 
 def bt_selection_buttons(id_):
     gid = id_[:12] if len(id_) > 25 else id_
-    pin = "".join([n for n in id_ if n.isdigit()][:4])
+    pin = Config.get_pin(id_)
     buttons = ButtonMaker()
     if Config.WEB_PINCODE:
         buttons.url_button("Select Files", f"{Config.BASE_URL}/app/files?gid={id_}")

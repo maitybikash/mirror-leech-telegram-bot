@@ -13,10 +13,33 @@ from aioqbt.client import create_client
 from aiohttp.client_exceptions import ClientError
 from aioqbt.exc import AQError
 
+import hmac
+import hashlib
+from os import getenv
+from importlib import import_module
 from web.nodes import extract_file_ids, make_tree
 
 getLogger("httpx").setLevel(WARNING)
 getLogger("aiohttp").setLevel(WARNING)
+
+
+def get_telegram_hash():
+    try:
+        settings = import_module("config")
+        val = getattr(settings, "TELEGRAM_HASH", "")
+        return str(val).strip() if val else ""
+    except ModuleNotFoundError:
+        return getenv("TELEGRAM_HASH", "").strip()
+
+
+def verify_pin(gid, pin):
+    key = get_telegram_hash()
+    if not key:
+        key = "secret"
+    key_bytes = key.encode()
+    gid_bytes = gid.encode()
+    expected = hmac.new(key_bytes, gid_bytes, hashlib.sha256).hexdigest()[:6]
+    return hmac.compare_digest(expected, pin)
 
 aria2 = None
 qbittorrent = None
@@ -119,8 +142,7 @@ async def handle_torrent(request: Request):
             }
         )
 
-    code = "".join([nbr for nbr in gid if nbr.isdigit()][:4])
-    if code != pin:
+    if not verify_pin(gid, pin):
         return JSONResponse(
             {
                 "files": [],
