@@ -1,7 +1,5 @@
-from aiofiles import open as aiopen
 from contextlib import redirect_stdout
 from io import StringIO, BytesIO
-from os import path as ospath, getcwd, chdir
 from textwrap import indent
 from traceback import format_exc
 from inspect import isawaitable
@@ -68,10 +66,6 @@ async def do(func, message):
     content = message.text.split(maxsplit=1)[-1]
     body = cleanup_code(content)
     env = namespace_of(message)
-
-    chdir(getcwd())
-    async with aiopen(ospath.join(getcwd(), "bot/modules/temp.txt"), "w") as temp:
-        await temp.write(body)
 
     stdout = StringIO()
 
