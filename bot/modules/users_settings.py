@@ -1,4 +1,5 @@
 from aiofiles.os import remove, path as aiopath, makedirs
+from ast import literal_eval
 from asyncio import sleep
 from functools import partial
 from html import escape
@@ -411,7 +412,7 @@ async def add_one(_, message, option):
     value = message.text
     if value.startswith("{") and value.endswith("}"):
         try:
-            value = eval(value)
+            value = literal_eval(value)
             if user_dict[option]:
                 user_dict[option].update(value)
             else:
@@ -465,7 +466,7 @@ async def set_option(_, message, option):
     elif option in ["UPLOAD_PATHS", "FFMPEG_CMDS", "YT_DLP_OPTIONS"]:
         if value.startswith("{") and value.endswith("}"):
             try:
-                value = eval(value)
+                value = literal_eval(value)
             except Exception as e:
                 await send_message(message, str(e))
                 return

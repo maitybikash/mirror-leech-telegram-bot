@@ -1,5 +1,6 @@
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
+import json
 from logging import getLogger
 from os import path as ospath, listdir, remove
 from tenacity import (
@@ -178,7 +179,10 @@ class GoogleDriveUpload(GoogleDriveHelper):
                     continue
                 if err.resp.get("content-type", "").startswith("application/json"):
                     reason = (
-                        eval(err.content).get("error").get("errors")[0].get("reason")
+                        json.loads(err.content)
+                        .get("error")
+                        .get("errors")[0]
+                        .get("reason")
                     )
                     if reason not in [
                         "userRateLimitExceeded",
