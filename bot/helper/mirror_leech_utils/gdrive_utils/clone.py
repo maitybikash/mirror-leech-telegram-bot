@@ -145,9 +145,15 @@ class GoogleDriveClone(GoogleDriveHelper):
             )
         except HttpError as err:
             if err.resp.get("content-type", "").startswith("application/json"):
-                reason = (
-                    json.loads(err.content).get("error").get("errors")[0].get("reason")
-                )
+                try:
+                    reason = (
+                        json.loads(err.content)
+                        .get("error")
+                        .get("errors")[0]
+                        .get("reason")
+                    )
+                except (AttributeError, IndexError, KeyError, json.JSONDecodeError, TypeError):
+                    reason = "Error"
                 if reason not in [
                     "userRateLimitExceeded",
                     "dailyLimitExceeded",

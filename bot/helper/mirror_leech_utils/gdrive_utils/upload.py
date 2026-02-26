@@ -178,12 +178,15 @@ class GoogleDriveUpload(GoogleDriveHelper):
                     retries += 1
                     continue
                 if err.resp.get("content-type", "").startswith("application/json"):
-                    reason = (
-                        json.loads(err.content)
-                        .get("error")
-                        .get("errors")[0]
-                        .get("reason")
-                    )
+                    try:
+                        reason = (
+                            json.loads(err.content)
+                            .get("error")
+                            .get("errors")[0]
+                            .get("reason")
+                        )
+                    except (AttributeError, IndexError, KeyError, json.JSONDecodeError, TypeError):
+                        reason = "Error"
                     if reason not in [
                         "userRateLimitExceeded",
                         "dailyLimitExceeded",
