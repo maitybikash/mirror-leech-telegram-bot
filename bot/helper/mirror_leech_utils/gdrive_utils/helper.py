@@ -2,6 +2,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from google_auth_httplib2 import AuthorizedHttp
 from googleapiclient.http import build_http
+import json
 from logging import getLogger, ERROR
 from os import path as ospath, listdir
 from pickle import load as pload
@@ -234,3 +235,36 @@ class GoogleDriveHelper:
             await self.listener.on_upload_error(
                 "your upload has been stopped and uploaded data has been deleted!"
             )
+
+    def get_google_drive_error_reason(self, err):
+        if err.resp.get("content-type", "").startswith("application/json"):
+            try:
+                return (
+                    json.loads(err.content).get("error").get("errors")[0].get("reason")
+                )
+            except (
+                AttributeError,
+                IndexError,
+                KeyError,
+                json.JSONDecodeError,
+                TypeError,
+            ):
+                pass
+        return "Error"
+
+    def handle_service_account_switch(self, err, reason, retry_func, *args, **kwargs):
+        if self.use_sa:
+            if self.sa_count >= self.sa_number:
+                LOGGER.info(
+                    f"Reached maximum number of service accounts switching, which is {self.sa_count}"
+                )
+                raise err
+            else:
+                if self.listener.is_cancelled:
+                    return
+                self.switch_service_account()
+                LOGGER.info(f"Got: {reason}, Trying Again...")
+                return retry_func(*args, **kwargs)
+        else:
+            LOGGER.error(f"Got: {reason}")
+            raise err

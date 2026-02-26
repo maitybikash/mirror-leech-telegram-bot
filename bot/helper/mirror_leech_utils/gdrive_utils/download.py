@@ -1,6 +1,5 @@
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaIoBaseDownload
-import json
 from io import FileIO
 from logging import getLogger
 from os import makedirs, path as ospath
@@ -145,40 +144,21 @@ class GoogleDriveDownload(GoogleDriveHelper):
                 if err.resp.status in [500, 502, 503, 504, 429] and retries < 10:
                     retries += 1
                     continue
-                if err.resp.get("content-type", "").startswith("application/json"):
-                    try:
-                        reason = (
-                            json.loads(err.content)
-                            .get("error")
-                            .get("errors")[0]
-                            .get("reason")
-                        )
-                    except (AttributeError, IndexError, KeyError, json.JSONDecodeError, TypeError):
-                        reason = "Error"
-                    if "fileNotDownloadable" in reason and "document" in mime_type:
-                        return self._download_file(
-                            file_id, path, filename, mime_type, True
-                        )
-                    if reason not in [
-                        "downloadQuotaExceeded",
-                        "dailyLimitExceeded",
-                    ]:
-                        raise err
-                    if self.use_sa:
-                        if self.sa_count >= self.sa_number:
-                            LOGGER.info(
-                                f"Reached maximum number of service accounts switching, which is {self.sa_count}"
-                            )
-                            raise err
-                        else:
-                            if self.listener.is_cancelled:
-                                return
-                            self.switch_service_account()
-                            LOGGER.info(f"Got: {reason}, Trying Again...")
-                            return self._download_file(
-                                file_id, path, filename, mime_type
-                            )
-                    else:
-                        LOGGER.error(f"Got: {reason}")
-                        raise err
+                reason = self.get_google_drive_error_reason(err)
+                if "fileNotDownloadable" in reason and "document" in mime_type:
+                    return self._download_file(file_id, path, filename, mime_type, True)
+                if reason not in [
+                    "downloadQuotaExceeded",
+                    "dailyLimitExceeded",
+                ]:
+                    raise err
+                return self.handle_service_account_switch(
+                    err,
+                    reason,
+                    self._download_file,
+                    file_id,
+                    path,
+                    filename,
+                    mime_type,
+                )
         self.file_processed_bytes = 0
