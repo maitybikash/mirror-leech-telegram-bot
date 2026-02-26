@@ -756,138 +756,138 @@ async def rss_monitor():
         )
     elif chat.lstrip("-").isdigit():
         rss_chat_id = int(chat)
-    for user, items in list(rss_dict.items()):
-        for title, data in items.items():
-            try:
-                if data["paused"]:
-                    continue
-                tries = 0
-                while True:
-                    try:
-                        async with AsyncClient(
-                            headers=headers,
-                            follow_redirects=True,
-                            timeout=60,
-                            verify=False,
-                        ) as client:
-                            res = await client.get(data["link"])
-                        html = res.text
-                        break
-                    except:
-                        tries += 1
-                        if tries > 3:
-                            raise
+    async with AsyncClient(
+        headers=headers,
+        follow_redirects=True,
+        timeout=60,
+        verify=False,
+    ) as client:
+        for user, items in list(rss_dict.items()):
+            for title, data in items.items():
+                try:
+                    if data["paused"]:
                         continue
-                rss_d = feed_parse(html)
-                if not rss_d.entries:
-                    LOGGER.warning(
-                        f"No entries found for > Feed Title: {title} - Feed Link: {data['link']}"
-                    )
-                    continue
-                entry0 = rss_d.entries[0]
-                links = entry0.get("links", [])
-                if len(links) > 1:
-                    last_link = links[1].get("href")
-                elif links:
-                    last_link = links[0].get("href")
-                else:
-                    last_link = entry0.get("link")
-                last_title = entry0.get("title")
-                all_paused = False
-                if data["last_feed"] == last_link or data["last_title"] == last_title:
-                    continue
-                feed_count = 0
-                while True:
-                    try:
-                        await sleep(10)
-                    except:
-                        raise RssShutdownException("Rss Monitor Stopped!")
-                    try:
-                        item_title = rss_d.entries[feed_count]["title"]
+                    tries = 0
+                    while True:
                         try:
-                            url = rss_d.entries[feed_count]["links"][1]["href"]
-                        except IndexError:
-                            url = rss_d.entries[feed_count]["link"]
-                        if data["last_feed"] == url or data["last_title"] == item_title:
+                            res = await client.get(data["link"])
+                            html = res.text
                             break
-                        if rss_d.entries[feed_count].get("size"):
-                            size = int(rss_d.entries[feed_count]["size"])
-                        elif rss_d.entries[feed_count].get("summary"):
-                            summary = rss_d.entries[feed_count]["summary"]
-                            matches = size_regex.findall(summary)
-                            sizes = [match[0] for match in matches]
-                            size = get_size_bytes(sizes[0])
-                        else:
-                            size = 0
-                    except IndexError:
-                        LOGGER.warning(
-                            f"Reached Max index no. {feed_count} for this feed: {title}. Maybe you need to use less RSS_DELAY to not miss some torrents"
-                        )
-                        break
-                    parse = True
-                    for flist in data["inf"]:
-                        if (
-                            data.get("sensitive", False)
-                            and all(x.lower() not in item_title.lower() for x in flist)
-                        ) or (
-                            not data.get("sensitive", False)
-                            and all(x not in item_title for x in flist)
-                        ):
-                            parse = False
-                            feed_count += 1
-                            break
-                    if not parse:
-                        continue
-                    for flist in data["exf"]:
-                        if (
-                            data.get("sensitive", False)
-                            and any(x.lower() in item_title.lower() for x in flist)
-                        ) or (
-                            not data.get("sensitive", False)
-                            and any(x in item_title for x in flist)
-                        ):
-                            parse = False
-                            feed_count += 1
-                            break
-                    if not parse:
-                        continue
-                    if command := data["command"]:
-                        if (
-                            size
-                            and Config.RSS_SIZE_LIMIT
-                            and Config.RSS_SIZE_LIMIT < size
-                        ):
-                            feed_count += 1
+                        except:
+                            tries += 1
+                            if tries > 3:
+                                raise
                             continue
-                        cmd = command.split(maxsplit=1)
-                        cmd.insert(1, url)
-                        feed_msg = " ".join(cmd)
-                        if not feed_msg.startswith("/"):
-                            feed_msg = f"/{feed_msg}"
-                    else:
-                        feed_msg = f"<b>Name: </b><code>{item_title.replace('>', '').replace('<', '')}</code>"
-                        feed_msg += f"\n\n<b>Link: </b><code>{url}</code>"
-                        if size:
-                            feed_msg += f"\n<b>Size: </b>{get_readable_file_size(size)}"
-                    feed_msg += (
-                        f"\n<b>Tag: </b><code>{data['tag']}</code> <code>{user}</code>"
-                    )
-                    await send_rss(feed_msg, rss_chat_id, rss_topic_id)
-                    feed_count += 1
-                async with rss_dict_lock:
-                    if user not in rss_dict or not rss_dict[user].get(title, False):
+                    rss_d = feed_parse(html)
+                    if not rss_d.entries:
+                        LOGGER.warning(
+                            f"No entries found for > Feed Title: {title} - Feed Link: {data['link']}"
+                        )
                         continue
-                    rss_dict[user][title].update(
-                        {"last_feed": last_link, "last_title": last_title}
-                    )
-                await database.rss_update(user)
-                LOGGER.info(f"Feed Name: {title}")
-                LOGGER.info(f"Last item: {last_link}")
-            except RssShutdownException as ex:
-                LOGGER.info(ex)
-                break
-            except Exception as e:
-                LOGGER.error(f"{e} - Feed Name: {title} - Feed Link: {data['link']}")
+                    entry0 = rss_d.entries[0]
+                    links = entry0.get("links", [])
+                    if len(links) > 1:
+                        last_link = links[1].get("href")
+                    elif links:
+                        last_link = links[0].get("href")
+                    else:
+                        last_link = entry0.get("link")
+                    last_title = entry0.get("title")
+                    all_paused = False
+                    if data["last_feed"] == last_link or data["last_title"] == last_title:
+                        continue
+                    feed_count = 0
+                    while True:
+                        try:
+                            await sleep(10)
+                        except:
+                            raise RssShutdownException("Rss Monitor Stopped!")
+                        try:
+                            item_title = rss_d.entries[feed_count]["title"]
+                            try:
+                                url = rss_d.entries[feed_count]["links"][1]["href"]
+                            except IndexError:
+                                url = rss_d.entries[feed_count]["link"]
+                            if data["last_feed"] == url or data["last_title"] == item_title:
+                                break
+                            if rss_d.entries[feed_count].get("size"):
+                                size = int(rss_d.entries[feed_count]["size"])
+                            elif rss_d.entries[feed_count].get("summary"):
+                                summary = rss_d.entries[feed_count]["summary"]
+                                matches = size_regex.findall(summary)
+                                sizes = [match[0] for match in matches]
+                                size = get_size_bytes(sizes[0])
+                            else:
+                                size = 0
+                        except IndexError:
+                            LOGGER.warning(
+                                f"Reached Max index no. {feed_count} for this feed: {title}. Maybe you need to use less RSS_DELAY to not miss some torrents"
+                            )
+                            break
+                        parse = True
+                        for flist in data["inf"]:
+                            if (
+                                data.get("sensitive", False)
+                                and all(x.lower() not in item_title.lower() for x in flist)
+                            ) or (
+                                not data.get("sensitive", False)
+                                and all(x not in item_title for x in flist)
+                            ):
+                                parse = False
+                                feed_count += 1
+                                break
+                        if not parse:
+                            continue
+                        for flist in data["exf"]:
+                            if (
+                                data.get("sensitive", False)
+                                and any(x.lower() in item_title.lower() for x in flist)
+                            ) or (
+                                not data.get("sensitive", False)
+                                and any(x in item_title for x in flist)
+                            ):
+                                parse = False
+                                feed_count += 1
+                                break
+                        if not parse:
+                            continue
+                        if command := data["command"]:
+                            if (
+                                size
+                                and Config.RSS_SIZE_LIMIT
+                                and Config.RSS_SIZE_LIMIT < size
+                            ):
+                                feed_count += 1
+                                continue
+                            cmd = command.split(maxsplit=1)
+                            cmd.insert(1, url)
+                            feed_msg = " ".join(cmd)
+                            if not feed_msg.startswith("/"):
+                                feed_msg = f"/{feed_msg}"
+                        else:
+                            feed_msg = f"<b>Name: </b><code>{item_title.replace('>', '').replace('<', '')}</code>"
+                            feed_msg += f"\n\n<b>Link: </b><code>{url}</code>"
+                            if size:
+                                feed_msg += f"\n<b>Size: </b>{get_readable_file_size(size)}"
+                        feed_msg += (
+                            f"\n<b>Tag: </b><code>{data['tag']}</code> <code>{user}</code>"
+                        )
+                        await send_rss(feed_msg, rss_chat_id, rss_topic_id)
+                        feed_count += 1
+                    async with rss_dict_lock:
+                        if user not in rss_dict or not rss_dict[user].get(title, False):
+                            continue
+                        rss_dict[user][title].update(
+                            {"last_feed": last_link, "last_title": last_title}
+                        )
+                    await database.rss_update(user)
+                    LOGGER.info(f"Feed Name: {title}")
+                    LOGGER.info(f"Last item: {last_link}")
+                except RssShutdownException as ex:
+                    LOGGER.info(ex)
+                    break
+                except Exception as e:
+                    LOGGER.error(f"{e} - Feed Name: {title} - Feed Link: {data['link']}")
                 continue
     if all_paused:
         scheduler.pause()
