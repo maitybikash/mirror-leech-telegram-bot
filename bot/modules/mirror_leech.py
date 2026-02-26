@@ -250,6 +250,7 @@ class Mirror(TaskListener):
             ).new_event()
             return
 
+        is_downloaded = False
         if reply_to:
             file_ = (
                 reply_to.document
@@ -273,6 +274,7 @@ class Mirror(TaskListener):
                 or file_.file_name.endswith((".torrent", ".dlc", ".nzb"))
             ):
                 self.link = await reply_to.download()
+                is_downloaded = True
                 file_ = None
 
         if (
@@ -283,7 +285,7 @@ class Mirror(TaskListener):
             or file_ is None
             and not is_url(self.link)
             and not is_magnet(self.link)
-            and not await aiopath.exists(self.link)
+            and not (is_downloaded and await aiopath.exists(self.link))
             and not is_rclone_path(self.link)
             and not is_gdrive_id(self.link)
             and not is_gdrive_link(self.link)
