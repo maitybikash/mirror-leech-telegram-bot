@@ -410,14 +410,17 @@ class TaskListener(TaskConfig):
 
         await start_from_queued()
 
-    async def on_download_error(self, error, button=None):
+    async def _cleanup_task(self, error_msg, button=None, is_download_error=False):
         async with task_dict_lock:
             if self.mid in task_dict:
                 del task_dict[self.mid]
             count = len(task_dict)
-        await self.remove_from_same_dir()
-        msg = f"{self.tag} Download: {escape(str(error))}"
-        await send_message(self.message, msg, button)
+
+        if is_download_error:
+            await self.remove_from_same_dir()
+
+        await send_message(self.message, error_msg, button)
+
         if count == 0:
             await self.clean()
         else:
@@ -449,41 +452,11 @@ class TaskListener(TaskConfig):
             await clean_download(self.up_dir)
         if self.thumb and await aiopath.exists(self.thumb):
             await remove(self.thumb)
+
+    async def on_download_error(self, error, button=None):
+        msg = f"{self.tag} Download: {escape(str(error))}"
+        await self._cleanup_task(msg, button, is_download_error=True)
 
     async def on_upload_error(self, error):
-        async with task_dict_lock:
-            if self.mid in task_dict:
-                del task_dict[self.mid]
-            count = len(task_dict)
-        await send_message(self.message, f"{self.tag} {escape(str(error))}")
-        if count == 0:
-            await self.clean()
-        else:
-            await update_status_message(self.message.chat.id)
-
-        if (
-            self.is_super_chat
-            and Config.INCOMPLETE_TASK_NOTIFIER
-            and Config.DATABASE_URL
-        ):
-            await database.rm_complete_task(self.message.link)
-
-        async with queue_dict_lock:
-            if self.mid in queued_dl:
-                queued_dl[self.mid].set()
-                del queued_dl[self.mid]
-            if self.mid in queued_up:
-                queued_up[self.mid].set()
-                del queued_up[self.mid]
-            if self.mid in non_queued_dl:
-                non_queued_dl.remove(self.mid)
-            if self.mid in non_queued_up:
-                non_queued_up.remove(self.mid)
-
-        await start_from_queued()
-        await sleep(3)
-        await clean_download(self.dir)
-        if self.up_dir:
-            await clean_download(self.up_dir)
-        if self.thumb and await aiopath.exists(self.thumb):
-            await remove(self.thumb)
+        msg = f"{self.tag} {escape(str(error))}"
+        await self._cleanup_task(msg)
