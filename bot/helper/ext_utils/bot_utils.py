@@ -88,23 +88,13 @@ async def get_telegraph_list(telegraph_content):
 
 
 def arg_parser(items, arg_base):
-
     if not items:
         return
 
-    arg_start = -1
-    i = 0
-    total = len(items)
-
-    bool_arg_set = {
-        "-b",
-        "-e",
-        "-z",
+    # Flags that are strictly boolean (never consume value)
+    pure_bool = {
         "-s",
         "-j",
-        "-d",
-        "-sv",
-        "-ss",
         "-f",
         "-fd",
         "-fu",
@@ -116,6 +106,20 @@ def arg_parser(items, arg_base):
         "-bt",
     }
 
+    # Flags that can be boolean (if no value provided) or take a value
+    hybrid_bool = {
+        "-b",
+        "-e",
+        "-z",
+        "-d",
+        "-sv",
+        "-ss",
+    }
+
+    i = 0
+    total = len(items)
+    arg_start = -1
+
     while i < total:
         part = items[i]
 
@@ -123,59 +127,78 @@ def arg_parser(items, arg_base):
             if arg_start == -1:
                 arg_start = i
 
-            if (
-                i + 1 == total
-                and part in bool_arg_set
-                or part
-                in [
-                    "-s",
-                    "-j",
-                    "-f",
-                    "-fd",
-                    "-fu",
-                    "-sync",
-                    "-hl",
-                    "-doc",
-                    "-med",
-                    "-ut",
-                    "-bt",
-                ]
-            ):
+            # Case 1: Pure boolean flag
+            if part in pure_bool:
                 arg_base[part] = True
-            else:
-                sub_list = []
-                for j in range(i + 1, total):
-                    if items[j] in arg_base:
-                        if part == "-c" and items[j] == "-c":
-                            sub_list.append(items[j])
-                            continue
-                        if part in bool_arg_set and not sub_list:
-                            arg_base[part] = True
-                            break
-                        if not sub_list:
-                            break
-                        check = " ".join(sub_list).strip()
-                        if part != "-ff":
-                            break
-                        if check.startswith("[") and check.endswith("]"):
-                            break
-                        elif not check.startswith("["):
-                            break
-                    sub_list.append(items[j])
-                if sub_list:
-                    value = " ".join(sub_list)
+                i += 1
+                continue
+
+            # Case 2: Hybrid flag acting as boolean
+            # It acts as boolean if it's the last item OR the next item is a recognized flag
+            is_next_flag = False
+            if i + 1 < total:
+                next_item = items[i + 1]
+                if next_item in arg_base:
+                    # Exception: -c allows -c as value
+                    if not (part == "-c" and next_item == "-c"):
+                        is_next_flag = True
+
+            if part in hybrid_bool and (i + 1 == total or is_next_flag):
+                arg_base[part] = True
+                i += 1
+                continue
+
+            # Case 3: Flag consuming value(s)
+            sub_list = []
+            j = i + 1
+            while j < total:
+                item = items[j]
+                if item in arg_base:
+                    # Check for -c exception
+                    if part == "-c" and item == "-c":
+                        sub_list.append(item)
+                        j += 1
+                        continue
+
+                    # Check if we should stop consuming
                     if part == "-ff":
-                        if not value.strip().startswith("["):
-                            arg_base[part].add(value)
-                        else:
-                            try:
-                                arg_base[part].add(tuple(literal_eval(value)))
-                            except:
-                                pass
+                        check = " ".join(sub_list).strip()
+                        # If inside brackets, continue consuming flags
+                        if check.startswith("[") and not check.endswith("]"):
+                            sub_list.append(item)
+                            j += 1
+                            continue
+
+                    # If we are here, it's a new flag and we should stop consuming
+                    break
+
+                sub_list.append(item)
+                j += 1
+
+            if sub_list:
+                value = " ".join(sub_list)
+                if part == "-ff":
+                    # Handle -ff specially for tuple/list evaluation
+                    if value.strip().startswith("["):
+                        try:
+                            arg_base[part].add(tuple(literal_eval(value)))
+                        except Exception:
+                            pass
                     else:
-                        arg_base[part] = value
-                    i += len(sub_list)
-        i += 1
+                        arg_base[part].add(value)
+                else:
+                    arg_base[part] = value
+
+                i = j
+            else:
+                # No value consumed. If it was hybrid, we handled it above.
+                # If it was a standard value flag (like -n), it remains default.
+                i += 1
+
+        else:
+            # Not in arg_base.
+            i += 1
+
     if "link" in arg_base:
         link_items = items[:arg_start] if arg_start != -1 else items
         if link_items:
