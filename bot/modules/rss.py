@@ -763,6 +763,7 @@ async def rss_monitor():
         verify=False,
     ) as client:
         for user, items in list(rss_dict.items()):
+            rss_user_updated = False
             for title, data in items.items():
                 try:
                     if data["paused"]:
@@ -880,7 +881,7 @@ async def rss_monitor():
                         rss_dict[user][title].update(
                             {"last_feed": last_link, "last_title": last_title}
                         )
-                    await database.rss_update(user)
+                        rss_user_updated = True
                     LOGGER.info(f"Feed Name: {title}")
                     LOGGER.info(f"Last item: {last_link}")
                 except RssShutdownException as ex:
@@ -889,6 +890,8 @@ async def rss_monitor():
                 except Exception as e:
                     LOGGER.error(f"{e} - Feed Name: {title} - Feed Link: {data['link']}")
                 continue
+            if rss_user_updated:
+                await database.rss_update(user)
     if all_paused:
         scheduler.pause()
 
