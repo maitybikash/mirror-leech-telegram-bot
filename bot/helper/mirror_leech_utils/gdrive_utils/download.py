@@ -146,12 +146,15 @@ class GoogleDriveDownload(GoogleDriveHelper):
                     retries += 1
                     continue
                 if err.resp.get("content-type", "").startswith("application/json"):
-                    reason = (
-                        json.loads(err.content)
-                        .get("error")
-                        .get("errors")[0]
-                        .get("reason")
-                    )
+                    try:
+                        reason = (
+                            json.loads(err.content)
+                            .get("error")
+                            .get("errors")[0]
+                            .get("reason")
+                        )
+                    except (AttributeError, IndexError, KeyError, json.JSONDecodeError, TypeError):
+                        reason = "Error"
                     if "fileNotDownloadable" in reason and "document" in mime_type:
                         return self._download_file(
                             file_id, path, filename, mime_type, True
