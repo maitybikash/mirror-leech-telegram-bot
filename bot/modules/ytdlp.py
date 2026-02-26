@@ -329,6 +329,45 @@ class YtDlp(TaskListener):
             LOGGER.error(e)
             opt = {}
 
+        if opt:
+            blocked_opts = [
+                "external_downloader",
+                "external_downloader_args",
+                "exec_cmd",
+                "exec",
+                "exec_before_dl",
+                "paths",
+                "outtmpl",
+                "outtmpl_na_placeholder",
+                "cookiefile",
+                "cookiesfrombrowser",
+                "progress_hooks",
+                "postprocessor_hooks",
+                "logger",
+                "logtostderr",
+            ]
+            safe_opt = {}
+            for key, value in opt.items():
+                if key in blocked_opts:
+                    LOGGER.warning(f"Blocked dangerous option: {key}")
+                    continue
+                if key == "postprocessors":
+                    if isinstance(value, list):
+                        clean_pps = []
+                        for pp in value:
+                            if isinstance(pp, dict):
+                                pp_key = pp.get("key", "")
+                                if "Exec" in pp_key:
+                                    LOGGER.warning(
+                                        f"Blocked dangerous postprocessor: {pp_key}"
+                                    )
+                                    continue
+                                clean_pps.append(pp)
+                        safe_opt[key] = clean_pps
+                else:
+                    safe_opt[key] = value
+            opt = safe_opt
+
         self.ffmpeg_cmds = args["-ff"]
         self.select = args["-s"]
         self.name = args["-n"]
