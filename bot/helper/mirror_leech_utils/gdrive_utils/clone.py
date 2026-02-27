@@ -1,5 +1,4 @@
 from googleapiclient.errors import HttpError
-import json
 from logging import getLogger
 from os import path as ospath
 from tenacity import (
@@ -144,35 +143,20 @@ class GoogleDriveClone(GoogleDriveHelper):
                 .execute()
             )
         except HttpError as err:
-            if err.resp.get("content-type", "").startswith("application/json"):
-                try:
-                    reason = (
-                        json.loads(err.content)
-                        .get("error")
-                        .get("errors")[0]
-                        .get("reason")
-                    )
-                except (AttributeError, IndexError, KeyError, json.JSONDecodeError, TypeError):
-                    reason = "Error"
-                if reason not in [
-                    "userRateLimitExceeded",
-                    "dailyLimitExceeded",
-                    "cannotCopyFile",
-                ]:
-                    raise err
-                if reason == "cannotCopyFile":
-                    LOGGER.error(err)
-                elif self.use_sa:
-                    if self.sa_count >= self.sa_number:
-                        LOGGER.info(
-                            f"Reached maximum number of service accounts switching, which is {self.sa_count}"
-                        )
-                        raise err
-                    else:
-                        if self.listener.is_cancelled:
-                            return
-                        self.switch_service_account()
-                        return self._copy_file(file_id, dest_id)
-                else:
-                    LOGGER.error(f"Got: {reason}")
-                    raise err
+            reason = self.get_google_drive_error_reason(err)
+            if reason not in [
+                "userRateLimitExceeded",
+                "dailyLimitExceeded",
+                "cannotCopyFile",
+            ]:
+                raise err
+            if reason == "cannotCopyFile":
+                LOGGER.error(err)
+                return
+            return self.handle_service_account_switch(
+                err,
+                reason,
+                self._copy_file,
+                file_id,
+                dest_id,
+            )

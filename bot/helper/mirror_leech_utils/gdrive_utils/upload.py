@@ -1,6 +1,5 @@
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
-import json
 from logging import getLogger
 from os import path as ospath, listdir, remove
 from tenacity import (
@@ -177,42 +176,22 @@ class GoogleDriveUpload(GoogleDriveHelper):
                 if err.resp.status in [500, 502, 503, 504, 429] and retries < 10:
                     retries += 1
                     continue
-                if err.resp.get("content-type", "").startswith("application/json"):
-                    try:
-                        reason = (
-                            json.loads(err.content)
-                            .get("error")
-                            .get("errors")[0]
-                            .get("reason")
-                        )
-                    except (AttributeError, IndexError, KeyError, json.JSONDecodeError, TypeError):
-                        reason = "Error"
-                    if reason not in [
-                        "userRateLimitExceeded",
-                        "dailyLimitExceeded",
-                    ]:
-                        raise err
-                    if self.use_sa:
-                        if self.sa_count >= self.sa_number:
-                            LOGGER.info(
-                                f"Reached maximum number of service accounts switching, which is {self.sa_count}"
-                            )
-                            raise err
-                        else:
-                            if self.listener.is_cancelled:
-                                return
-                            self.switch_service_account()
-                            LOGGER.info(f"Got: {reason}, Trying Again...")
-                            return self._upload_file(
-                                file_path,
-                                file_name,
-                                mime_type,
-                                dest_id,
-                                in_dir,
-                            )
-                    else:
-                        LOGGER.error(f"Got: {reason}")
-                        raise err
+                reason = self.get_google_drive_error_reason(err)
+                if reason not in [
+                    "userRateLimitExceeded",
+                    "dailyLimitExceeded",
+                ]:
+                    raise err
+                return self.handle_service_account_switch(
+                    err,
+                    reason,
+                    self._upload_file,
+                    file_path,
+                    file_name,
+                    mime_type,
+                    dest_id,
+                    in_dir,
+                )
         if self.listener.is_cancelled:
             return
         try:
