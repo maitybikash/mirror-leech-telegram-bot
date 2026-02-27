@@ -131,44 +131,45 @@ async def status_pages(_, query):
         up_speed = 0
         seed_speed = ss
         async with task_dict_lock:
-            status_results = await gather(
-                *(get_download_status(download) for download in task_dict.values())
-            )
-            for status, speed in status_results:
-                match status:
-                    case MirrorStatus.STATUS_DOWNLOAD:
-                        tasks["Download"] += 1
-                        if speed:
-                            dl_speed += speed_string_to_bytes(speed)
-                    case MirrorStatus.STATUS_UPLOAD:
-                        tasks["Upload"] += 1
-                        up_speed += speed_string_to_bytes(speed)
-                    case MirrorStatus.STATUS_SEED:
-                        tasks["Seed"] += 1
-                    case MirrorStatus.STATUS_ARCHIVE:
-                        tasks["Archive"] += 1
-                    case MirrorStatus.STATUS_EXTRACT:
-                        tasks["Extract"] += 1
-                    case MirrorStatus.STATUS_SPLIT:
-                        tasks["Split"] += 1
-                    case MirrorStatus.STATUS_QUEUEDL:
-                        tasks["QueueDl"] += 1
-                    case MirrorStatus.STATUS_QUEUEUP:
-                        tasks["QueueUp"] += 1
-                    case MirrorStatus.STATUS_CLONE:
-                        tasks["Clone"] += 1
-                    case MirrorStatus.STATUS_CHECK:
-                        tasks["CheckUp"] += 1
-                    case MirrorStatus.STATUS_PAUSED:
-                        tasks["Pause"] += 1
-                    case MirrorStatus.STATUS_SAMVID:
-                        tasks["SamVid"] += 1
-                    case MirrorStatus.STATUS_CONVERT:
-                        tasks["ConvertMedia"] += 1
-                    case MirrorStatus.STATUS_FFMPEG:
-                        tasks["FFmpeg"] += 1
-                    case _:
-                        tasks["Download"] += 1
+            tasks_list = list(task_dict.values())
+        status_results = await gather(
+            *(get_download_status(download) for download in tasks_list)
+        )
+        for status, speed in status_results:
+            match status:
+                case MirrorStatus.STATUS_DOWNLOAD:
+                    tasks["Download"] += 1
+                    if speed:
+                        dl_speed += speed_string_to_bytes(speed)
+                case MirrorStatus.STATUS_UPLOAD:
+                    tasks["Upload"] += 1
+                    up_speed += speed_string_to_bytes(speed)
+                case MirrorStatus.STATUS_SEED:
+                    tasks["Seed"] += 1
+                case MirrorStatus.STATUS_ARCHIVE:
+                    tasks["Archive"] += 1
+                case MirrorStatus.STATUS_EXTRACT:
+                    tasks["Extract"] += 1
+                case MirrorStatus.STATUS_SPLIT:
+                    tasks["Split"] += 1
+                case MirrorStatus.STATUS_QUEUEDL:
+                    tasks["QueueDl"] += 1
+                case MirrorStatus.STATUS_QUEUEUP:
+                    tasks["QueueUp"] += 1
+                case MirrorStatus.STATUS_CLONE:
+                    tasks["Clone"] += 1
+                case MirrorStatus.STATUS_CHECK:
+                    tasks["CheckUp"] += 1
+                case MirrorStatus.STATUS_PAUSED:
+                    tasks["Pause"] += 1
+                case MirrorStatus.STATUS_SAMVID:
+                    tasks["SamVid"] += 1
+                case MirrorStatus.STATUS_CONVERT:
+                    tasks["ConvertMedia"] += 1
+                case MirrorStatus.STATUS_FFMPEG:
+                    tasks["FFmpeg"] += 1
+                case _:
+                    tasks["Download"] += 1
 
         msg = f"""<b>DL:</b> {tasks['Download']} | <b>UP:</b> {tasks['Upload']} | <b>SD:</b> {tasks['Seed']} | <b>AR:</b> {tasks['Archive']}
 <b>EX:</b> {tasks['Extract']} | <b>SP:</b> {tasks['Split']} | <b>QD:</b> {tasks['QueueDl']} | <b>QU:</b> {tasks['QueueUp']}
