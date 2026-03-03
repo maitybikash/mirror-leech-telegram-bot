@@ -116,7 +116,7 @@ def buzzheavier(url):
                     details["contents"].append(item)
                     size = speed_string_to_bytes(size)
                     details["total_size"] += size
-                except Exception:
+                except Exception as e:
                     continue
             details["title"] = tree.xpath("//span/text()")[0].strip()
             return details
@@ -407,8 +407,8 @@ def pixeldrain(url):
         code = url.split("/")[-1].split("?", 1)[0]
         response = get("https://pd.cybar.xyz/", allow_redirects=True)
         return response.url + code
-    except Exception:
-        raise DirectDownloadLinkException("ERROR: Direct link not found")
+    except Exception as e:
+        raise DirectDownloadLinkException(f"ERROR: {e.__class__.__name__} Direct link not found") from e
 
 
 @direct_link_generator_exception
@@ -729,8 +729,8 @@ def linkBox(url: str):
     parsed_url = urlparse(url)
     try:
         shareToken = parsed_url.path.split("/")[-1]
-    except Exception:
-        raise DirectDownloadLinkException("ERROR: invalid URL")
+    except Exception as e:
+        raise DirectDownloadLinkException(f"ERROR: {e.__class__.__name__} invalid URL") from e
 
     details = {"contents": [], "title": "", "total_size": 0}
 
@@ -785,7 +785,7 @@ def linkBox(url: str):
         try:
             if data["shareType"] == "singleItem":
                 return __singleItem(session, data["itemId"])
-        except Exception:
+        except Exception as e:
             pass
         if not details["title"]:
             details["title"] = data["dirName"]
@@ -929,8 +929,8 @@ def mediafireFolder(url):
         raw = url.split("/", 4)[-1]
         folderkey = raw.split("/", 1)[0]
         folderkey = folderkey.split(",")
-    except Exception:
-        raise DirectDownloadLinkException("ERROR: Could not parse ")
+    except Exception as e:
+        raise DirectDownloadLinkException(f"ERROR: {e.__class__.__name__} Could not parse") from e
     if len(folderkey) == 1:
         folderkey = folderkey[0]
     details = {"contents": [], "title": "", "total_size": 0, "header": ""}
@@ -986,7 +986,7 @@ def mediafireFolder(url):
 
         try:
             html = HTML(session.get(url).text)
-        except Exception:
+        except Exception as e:
             return None
         if html.xpath("//div[@class='passwordPrompt']"):
             if not _password:
@@ -995,13 +995,13 @@ def mediafireFolder(url):
                 )
             try:
                 html = HTML(session.post(url, data={"downloadp": _password}).text)
-            except Exception:
+            except Exception as e:
                 return None
             if html.xpath("//div[@class='passwordPrompt']"):
                 return None
         try:
             final_link = __decode_url(html)
-        except Exception:
+        except Exception as e:
             return None
         return final_link
 
@@ -1014,7 +1014,7 @@ def mediafireFolder(url):
                 try:
                     final_link = b64decode(scrambled).decode("utf-8")
                     return final_link
-                except Exception:
+                except Exception as e:
                     return None
             elif final_link.startswith("http"):
                 return final_link
@@ -1155,7 +1155,7 @@ def send_cm(url):
             )
             if "Location" in _res.headers:
                 return _res.headers["Location"]
-        except Exception:
+        except Exception as e:
             pass
 
     def __getFiles(html):
