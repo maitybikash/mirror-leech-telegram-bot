@@ -2,6 +2,7 @@ from aiofiles import open as aiopen
 from aiofiles.os import path as aiopath
 from asyncio import create_subprocess_exec
 from configparser import RawConfigParser
+from io import StringIO
 
 from ....core.config_manager import Config
 
@@ -26,8 +27,11 @@ async def rclone_serve_booter():
         config.add_section("combine")
         config.set("combine", "type", "combine")
         config.set("combine", "upstreams", upstreams)
-        with open("rclone.conf", "w") as f:
+        with StringIO() as f:
             config.write(f, space_around_delimiters=False)
+            config_content = f.getvalue()
+        async with aiopen("rclone.conf", "w") as f:
+            await f.write(config_content)
     if RcloneServe:
         try:
             RcloneServe[0].kill()
