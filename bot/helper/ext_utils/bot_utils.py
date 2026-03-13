@@ -225,7 +225,7 @@ async def get_content_type(url):
         async with AsyncClient() as client:
             response = await client.get(url, allow_redirects=True, verify=False)
             return response.headers.get("Content-Type")
-    except:
+    except Exception:
         return None
 
 
@@ -242,11 +242,11 @@ async def cmd_exec(cmd, shell=False):
     stdout, stderr = await proc.communicate()
     try:
         stdout = stdout.decode().strip()
-    except:
+    except Exception:
         stdout = "Unable to decode the response!"
     try:
         stderr = stderr.decode().strip()
-    except:
+    except Exception:
         stderr = "Unable to decode the error!"
     return stdout, stderr, proc.returncode
 
