@@ -1,4 +1,4 @@
-from asyncio import sleep
+from asyncio import sleep, gather
 from pyrogram.errors import FloodWait, FloodPremiumWait
 from re import match as re_match
 from time import time
@@ -95,12 +95,22 @@ async def auto_delete_message(cmd_message=None, bot_message=None):
 
 async def delete_status():
     async with task_dict_lock:
-        for key, data in list(status_dict.items()):
-            try:
-                await delete_message(data["message"])
+        status_items = list(status_dict.items())
+
+    if not status_items:
+        return
+
+    results = await gather(
+        *(delete_message(data["message"]) for _, data in status_items),
+        return_exceptions=True
+    )
+
+    async with task_dict_lock:
+        for (key, data), result in zip(status_items, results):
+            if isinstance(result, Exception):
+                LOGGER.error(str(result))
+            elif key in status_dict and status_dict[key]["message"] == data["message"]:
                 del status_dict[key]
-            except Exception as e:
-                LOGGER.error(str(e))
 
 
 async def get_tg_link_message(link):
