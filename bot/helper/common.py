@@ -414,7 +414,7 @@ class TaskConfig:
             if self.user_transmission:
                 try:
                     chat = await TgClient.user.get_chat(self.up_dest)
-                except:
+                except Exception:
                     chat = None
                 if chat is None:
                     LOGGER.warning(
@@ -452,7 +452,7 @@ class TaskConfig:
             if not self.user_transmission or self.hybrid_leech:
                 try:
                     chat = await self.client.get_chat(self.up_dest)
-                except:
+                except Exception:
                     chat = None
                 if chat is None:
                     if self.user_transmission:
@@ -487,7 +487,7 @@ class TaskConfig:
                             await self.client.send_chat_action(
                                 self.up_dest, ChatAction.TYPING
                             )
-                        except:
+                        except Exception:
                             raise ValueError("Start the bot and try again!")
         elif (
             self.user_transmission or self.hybrid_leech
@@ -594,7 +594,7 @@ class TaskConfig:
             self.user_dict = user_data.get(self.user_id, {})
             try:
                 await self.message.unpin()
-            except:
+            except Exception:
                 pass
         if self.user:
             if username := self.user.username:
@@ -759,7 +759,7 @@ class TaskConfig:
                         del_path = ospath.join(dirpath, file_)
                         try:
                             await remove(del_path)
-                        except:
+                        except Exception:
                             self.is_cancelled = True
         if self.proceed_count == 0:
             LOGGER.info("No files able to extract!")
@@ -1138,7 +1138,7 @@ class TaskConfig:
                     if res:
                         try:
                             await remove(f_path)
-                        except:
+                        except Exception:
                             self.is_cancelled = True
                             return False
                         if self.is_file:
@@ -1253,5 +1253,5 @@ class TaskConfig:
                 if res or f_size >= self.max_split_size:
                     try:
                         await remove(f_path)
-                    except:
+                    except Exception:
                         self.is_cancelled = True
