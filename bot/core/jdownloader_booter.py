@@ -80,9 +80,16 @@ class JDownloader(MyJdApi):
                     break
             await rmtree("/JDownloader/update")
             await rmtree("/JDownloader/tmp")
-        cmd = "java -Dsun.jnu.encoding=UTF-8 -Dfile.encoding=UTF-8 -Djava.awt.headless=true -jar /JDownloader/JDownloader.jar"
+        cmd = [
+            "java",
+            "-Dsun.jnu.encoding=UTF-8",
+            "-Dfile.encoding=UTF-8",
+            "-Djava.awt.headless=true",
+            "-jar",
+            "/JDownloader/JDownloader.jar",
+        ]
         self.is_connected = True
-        _, __, code = await cmd_exec(cmd, shell=True)
+        _, __, code = await cmd_exec(cmd)
         self.is_connected = False
         if code != -9:
             await self.boot()
