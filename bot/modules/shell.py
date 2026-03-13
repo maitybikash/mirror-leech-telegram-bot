@@ -2,12 +2,16 @@ import shlex
 from io import BytesIO
 
 from .. import LOGGER
+from ..core.config_manager import Config
 from ..helper.ext_utils.bot_utils import cmd_exec, new_task
 from ..helper.telegram_helper.message_utils import send_message, send_file
 
 
 @new_task
 async def run_shell(_, message):
+    user_id = message.from_user.id if message.from_user else message.sender_chat.id
+    if user_id != Config.OWNER_ID:
+        return
     cmd = message.text.split(maxsplit=1)
     if len(cmd) == 1:
         await send_message(message, "No command to execute was given.")
