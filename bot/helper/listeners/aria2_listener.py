@@ -114,7 +114,7 @@ async def _on_bt_download_complete(api, data):
                 ):
                     try:
                         await remove(f_path)
-                    except:
+                    except Exception:
                         pass
             await clean_unwanted(download.get("dir", ""))
         if task.listener.seed:

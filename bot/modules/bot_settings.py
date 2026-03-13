@@ -258,12 +258,12 @@ def parse_generic_types(value):
     if value.startswith("[") and value.endswith("]"):
         try:
             return literal_eval(value)
-        except:
+        except Exception:
             pass
     if value.startswith("{") and value.endswith("}"):
         try:
             return literal_eval(value)
-        except:
+        except Exception:
             pass
     return value
 
@@ -419,7 +419,7 @@ async def edit_nzb_server(_, message, pre_message, key, index=0):
         if value.startswith("{") and value.endswith("}"):
             try:
                 value = literal_eval(value)
-            except:
+            except Exception:
                 await send_message(message, "Invalid dict format!")
                 await update_buttons(pre_message, "nzbserver")
                 return

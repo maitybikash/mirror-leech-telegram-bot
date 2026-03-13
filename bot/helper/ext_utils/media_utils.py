@@ -167,7 +167,7 @@ async def take_ss(video_file, ss_nb) -> bool:
                 )
                 await rmtree(dirpath, ignore_errors=True)
                 return False
-        except:
+        except Exception:
             LOGGER.error(
                 f"Error while creating screenshots from video. Path: {video_file}. Error: Timeout some issues with ffmpeg with specific arch!"
             )
@@ -207,7 +207,7 @@ async def get_audio_thumbnail(audio_file):
                 f"Error while extracting thumbnail from audio. Name: {audio_file} stderr: {err}"
             )
             return None
-    except:
+    except Exception:
         LOGGER.error(
             f"Error while extracting thumbnail from audio. Name: {audio_file}. Error: Timeout some issues with ffmpeg with specific arch!"
         )
@@ -253,7 +253,7 @@ async def get_video_thumbnail(video_file, duration):
                 f"Error while extracting thumbnail from video. Name: {video_file} stderr: {err}"
             )
             return None
-    except:
+    except Exception:
         LOGGER.error(
             f"Error while extracting thumbnail from video. Name: {video_file}. Error: Timeout some issues with ffmpeg with specific arch!"
         )
@@ -301,7 +301,7 @@ async def get_multiple_frames_thumbnail(video_file, layout, keep_screenshots):
                 f"Error while combining thumbnails for video. Name: {video_file} stderr: {err}"
             )
             return None
-    except:
+    except Exception:
         LOGGER.error(
             f"Error while combining thumbnails from video. Name: {video_file}. Error: Timeout some issues with ffmpeg with specific arch!"
         )
@@ -362,7 +362,7 @@ class FFMpeg:
         ):
             try:
                 line = await wait_for(self._listener.subproc.stdout.readline(), 60)
-            except:
+            except Exception:
                 break
             line = line.decode().strip()
             if not line:
@@ -388,7 +388,7 @@ class FFMpeg:
                             self._eta_raw = (
                                 self._total_time - self._processed_time
                             ) / self._time_rate
-                        except:
+                        except Exception:
                             self._progress_raw = 0
                             self._eta_raw = 0
 
@@ -445,7 +445,7 @@ class FFMpeg:
         else:
             try:
                 stderr = stderr.decode().strip()
-            except:
+            except Exception:
                 stderr = "Unable to decode the error!"
             LOGGER.error(
                 f"{stderr}. Something went wrong while running ffmpeg cmd, mostly file requires different/specific arguments. Path: {f_path}"
@@ -532,7 +532,7 @@ class FFMpeg:
                 return await self.convert_video(video_file, ext, True)
             try:
                 stderr = stderr.decode().strip()
-            except:
+            except Exception:
                 stderr = "Unable to decode the error!"
             LOGGER.error(
                 f"{stderr}. Something went wrong while converting video, mostly file need specific codec. Path: {video_file}"
@@ -578,7 +578,7 @@ class FFMpeg:
         else:
             try:
                 stderr = stderr.decode().strip()
-            except:
+            except Exception:
                 stderr = "Unable to decode the error!"
             LOGGER.error(
                 f"{stderr}. Something went wrong while converting audio, mostly file need specific codec. Path: {audio_file}"
@@ -730,11 +730,11 @@ class FFMpeg:
             elif code != 0:
                 try:
                     stderr = stderr.decode().strip()
-                except:
+                except Exception:
                     stderr = "Unable to decode the error!"
                 try:
                     await remove(out_path)
-                except:
+                except Exception:
                     pass
                 if multi_streams:
                     LOGGER.warning(
