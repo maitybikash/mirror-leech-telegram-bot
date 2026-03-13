@@ -128,7 +128,7 @@ def time_to_seconds(time_duration):
         else:
             return 0
         return hours * 3600 + minutes * 60 + seconds
-    except:
+    except Exception:
         return 0
 
 
@@ -216,7 +216,7 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
             ):
                 try:
                     msg += f"\n<b>Seeders:</b> {task.seeders_num()} | <b>Leechers:</b> {task.leechers_num()}"
-                except:
+                except Exception:
                     pass
         elif tstatus == MirrorStatus.STATUS_SEED:
             msg += f"\n<b>Size: </b>{task.size()}"

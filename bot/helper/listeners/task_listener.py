@@ -60,7 +60,7 @@ class TaskListener(TaskConfig):
                     intvl.cancel()
             intervals["status"].clear()
             await gather(TorrentManager.aria2.purgeDownloadResult(), delete_status())
-        except:
+        except Exception:
             pass
 
     def clear(self):

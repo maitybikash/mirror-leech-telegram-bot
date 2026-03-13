@@ -90,7 +90,7 @@ async def select(_, message):
                         f"{e} Error in pause, this mostly happens after abuse aria2"
                     )
         task.listener.select = True
-    except:
+    except Exception:
         await send_message(message, "This is not a bittorrent or sabnzbd task!")
         return
 
@@ -130,7 +130,7 @@ async def confirm_selection(_, query):
                             if await aiopath.exists(f_path):
                                 try:
                                     await remove(f_path)
-                                except:
+                                except Exception:
                                     pass
                 if not task.queued:
                     await TorrentManager.qbittorrent.torrents.start([id_])
@@ -140,7 +140,7 @@ async def confirm_selection(_, query):
                     if f["selected"] == "false" and await aiopath.exists(f["path"]):
                         try:
                             await remove(f["path"])
-                        except:
+                        except Exception:
                             pass
                 if not task.queued:
                     try:
