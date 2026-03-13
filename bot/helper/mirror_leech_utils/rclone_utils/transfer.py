@@ -62,7 +62,7 @@ class RcloneTransferHelper:
         ):
             try:
                 data = await wait_for(self._proc.stdout.readline(), 60)
-            except:
+            except Exception:
                 break
             if not data:
                 break
@@ -498,7 +498,7 @@ class RcloneTransferHelper:
         if self._proc is not None:
             try:
                 self._proc.kill()
-            except:
+            except Exception:
                 pass
         if self._is_download:
             LOGGER.info(f"Cancelling Download: {self._listener.name}")
