@@ -1,6 +1,7 @@
+from aiofiles import open as aiopen
 from aiofiles.os import path, makedirs, listdir, rename
 from aioshutil import rmtree
-from json import dump
+from json import dumps
 from random import randint
 from re import match
 
@@ -58,18 +59,18 @@ class JDownloader(MyJdApi):
             "localapiserverheaderxxssprotection": "1; mode=block",
         }
         await makedirs("/JDownloader/cfg", exist_ok=True)
-        with open(
+        async with aiopen(
             "/JDownloader/cfg/org.jdownloader.api.myjdownloader.MyJDownloaderSettings.json",
             "w",
         ) as sf:
-            sf.truncate(0)
-            dump(jdata, sf)
-        with open(
+            await sf.truncate(0)
+            await sf.write(dumps(jdata))
+        async with aiopen(
             "/JDownloader/cfg/org.jdownloader.api.RemoteAPIConfig.json",
             "w",
         ) as rf:
-            rf.truncate(0)
-            dump(remote_data, rf)
+            await rf.truncate(0)
+            await rf.write(dumps(remote_data))
         if not await path.exists("/JDownloader/JDownloader.jar"):
             pattern = r"JDownloader\.jar\.backup.\d$"
             for filename in await listdir("/JDownloader"):
