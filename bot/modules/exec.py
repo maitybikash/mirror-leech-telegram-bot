@@ -90,9 +90,9 @@ async def do(func, message):
         is_exec = True
         try:
             if func == "exec":
-                exec(f"def func():\n{indent(body, '  ')}", env)
+                exec(f"def func():\n{indent(body, '  ')}", env)  # nosec B102
             else:
-                exec(f"async def func():\n{indent(body, '  ')}", env)
+                exec(f"async def func():\n{indent(body, '  ')}", env)  # nosec B102
         except Exception as e:
             return f"{e.__class__.__name__}: {e}"
 
