@@ -131,7 +131,6 @@ async def clear(_, message):
     user_id = message.from_user.id if message.from_user else message.sender_chat.id
     if user_id != Config.OWNER_ID:
         return
-    global namespaces
     if message.chat.id in namespaces:
         del namespaces[message.chat.id]
     await send("Locals Cleared.", message)
