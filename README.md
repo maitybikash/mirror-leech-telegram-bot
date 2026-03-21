@@ -2,8 +2,8 @@
 
 This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/python-aria-mirror-bot), has undergone substantial modifications and is designed for efficiently mirroring or leeching files from the Internet to various destinations, including Google Drive, Telegram, or any rclone-supported cloud. It is built using asynchronous programming in Python.
 
-- **TELEGRAM CHANNEL:** https://t.me/mltb_official_channel
-- **TELEGRAM GROUP:** https://t.me/mltb_official_support
+- **TELEGRAM CHANNEL:** <https://t.me/mltb_official_channel>
+- **TELEGRAM GROUP:** <https://t.me/mltb_official_support>
 
 <details>
   <summary><h1>Features</h1></summary>
@@ -232,7 +232,7 @@ sudo pacman -S docker python
 pip3 install -r requirements-cli.txt
 ```
 
-------
+---
 
 </details>
 
@@ -247,28 +247,29 @@ Fill up rest of the fields. Meaning of each field is discussed below.
 
 **1. Required Fields**
 
-- `BOT_TOKEN` (`Str`):  The Telegram Bot Token that you got from [@BotFather](https://t.me/BotFather).
+- `BOT_TOKEN` (`Str`): The Telegram Bot Token that you got from [@BotFather](https://t.me/BotFather).
 
-- `OWNER_ID` (`Int`):  The Telegram User ID (not username) of the Owner of the bot.
+- `OWNER_ID` (`Int`): The Telegram User ID (not username) of the Owner of the bot.
 
 - `TELEGRAM_API` (`Int`): This is to authenticate your Telegram account for downloading Telegram files. You can get this from <https://my.telegram.org>.
 
-- `TELEGRAM_HASH` (`Str`):  This is to authenticate your Telegram account for downloading Telegram files. You can get this from <https://my.telegram.org>.
+- `TELEGRAM_HASH` (`Str`): This is to authenticate your Telegram account for downloading Telegram files. You can get this from <https://my.telegram.org>.
 
 **2. Optional Fields**
+
 - `TG_PROXY` (`Dict`): The Proxy settings as dict. Ex: {"scheme": "socks5", "hostname": "11.22.33.44", "port": 1234, "username": "user", "password": "pass"}. The username and password can be omitted if the proxy doesn’t require authorization.
 
 - `USER_SESSION_STRING` (`Str`): To download/upload from your telegram account if user is `PREMIUM` and to send rss. To generate session string use this command `python3 generate_string_session.py` after mounting repo folder for sure. **NOTE**: You can't use bot with private message. Use it with superGroup.
 
-- `DATABASE_URL` (`Str`): Your Mongo Database URL (Connection string). Follow this [Create Database](https://github.com/anasty17/test?tab=readme-ov-file#create-database) to create database. Data will be saved in Database: bot settings, users settings, rss data and incomplete tasks. **NOTE**: You can always edit all settings that saved in database from the official site -> (Browse collections). 
+- `DATABASE_URL` (`Str`): Your Mongo Database URL (Connection string). Follow this [Create Database](https://github.com/anasty17/test?tab=readme-ov-file#create-database) to create database. Data will be saved in Database: bot settings, users settings, rss data and incomplete tasks. **NOTE**: You can always edit all settings that saved in database from the official site -> (Browse collections).
 
 - `CMD_SUFFIX` (`Str`|`Int`): Commands index number. This number will added at the end all commands.
 
 - `AUTHORIZED_CHATS` (`Str`): Fill user_id and chat_id of groups/users you want to authorize. To auth only specific topic(s) write it in this format `chat_id|thread_id` Ex:-100XXXXXXXXXXX or -100XXXXXXXXXXX|10 or -100XXXXXXXXXXX|10|12. Separate them by spaces.
 
-- `SUDO_USERS` (`Str`):  Fill user_id of users whom you want to give sudo permission. Separate them by spaces.
+- `SUDO_USERS` (`Str`): Fill user_id of users whom you want to give sudo permission. Separate them by spaces.
 
-- `UPLOAD_PATHS` (`Dict`): Send Dict of keys that have path values. Example: {"path 1": "remote:rclonefolder", "path 2": "gdrive1 id", "path 3": "tg chat id", "path 4": "mrcc:remote:", "path 5": "b: @username"}. 
+- `UPLOAD_PATHS` (`Dict`): Send Dict of keys that have path values. Example: {"path 1": "remote:rclonefolder", "path 2": "gdrive1 id", "path 3": "tg chat id", "path 4": "mrcc:remote:", "path 5": "b: @username"}.
 
 - `DEFAULT_UPLOAD` (`Str`): Whether `rc` to upload to `RCLONE_PATH` or `gd` to upload to `GDRIVE_ID`. Default is `rc`. Read More [HERE](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#upload).
 
@@ -287,18 +288,18 @@ Fill up rest of the fields. Meaning of each field is discussed below.
 - `STREAMWISH_API` (`Str`): Streamwish api key to mirror Streamwish links. Get it from [Streamwish](https://streamwish.com/?op=my_account).
 
 - `YT_DLP_OPTIONS` (`Dict`): Dict of yt-dlp options. Check all possible options [HERE](https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/YoutubeDL.py#L184) or use this [script](https://t.me/mltb_official_channel/177) to convert cli arguments to api options. Format: {key: value, key: value, key: value}.
-  - Example: {"format": "bv*+mergeall[vcodec=none]", "nocheckcertificate": True, "playliststart": 10, "fragment_retries": float("inf"), "matchtitle": "S13", "writesubtitles": True, "live_from_start": True, "postprocessor_args": {"ffmpeg": ["-threads", "4"]}, "wait_for_video": (5, 100), "download_ranges": [{"start_time": 0, "end_time": 10}]}
+  - Example: {"format": "bv\*+mergeall[vcodec=none]", "nocheckcertificate": True, "playliststart": 10, "fragment_retries": float("inf"), "matchtitle": "S13", "writesubtitles": True, "live_from_start": True, "postprocessor_args": {"ffmpeg": ["-threads", "4"]}, "wait_for_video": (5, 100), "download_ranges": [{"start_time": 0, "end_time": 10}]}
 
 - `USE_SERVICE_ACCOUNTS` (`Bool`): Whether to use Service Accounts or not, with google-api-python-client. For this to work see [Using Service Accounts](https://github.com/anasty17/mirror-leech-telegram-bot#generate-service-accounts-what-is-service-account) section below. Default is `False`.
 
 - `FFMPEG_CMDS` (`Dict`): Dict of list values of ffmpeg commands. You can set multiple ffmpeg commands for all files before upload. Don't write ffmpeg at beginning, start directly with the arguments. `Dict`
   - Examples: {"subtitle": ["-i mltb.mkv -c copy -c:s srt mltb.mkv", "-i mltb.video -c copy -c:s srt mltb"], "convert": ["-i mltb.m4a -c:a libmp3lame -q:a 2 mltb.mp3", "-i mltb.audio -c:a libmp3lame -q:a 2 mltb.mp3"], extract: ["-i mltb -map 0:a -c copy mltb.mka -map 0:s -c copy mltb.srt"], "metadata": ["-i mltb.mkv -map 0 -map -0:v:1 -map -0:s -map 0:s:0 -map -0:v:m:attachment -c copy -metadata:s:v:0 title={title} -metadata:s:a:0 title={title} -metadata:s:a:1 title={title2} -metadata:s:a:2 title={title2} -c:s srt -metadata:s:s:0 title={title3} mltb -y -del"], "watermark": ["-i mltb -i tg://openmessage?user_id=5272663208&message_id=322801 -filter_complex 'overlay=W-w-10:H-h-10' -c:a copy mltb"]}
-  **Notes**:
+    **Notes**:
   - Don't add ffmpeg at the beginning!
   - Add `-del` to the list which you want from the bot to delete the original files after command run complete!
   - To execute one of those lists in bot for example, you must use -ff subtitle (list key) or -ff convert (list key)
-  **Example**:
-  - Here I will explain how to use mltb.* which is reference to files you want to work on.
+    **Example**:
+  - Here I will explain how to use mltb.\* which is reference to files you want to work on.
   1. First cmd: the input is mltb.mkv so this cmd will work only on mkv videos and the output is mltb.mkv also so all outputs is mkv. `-del` will delete the original media after complete run of the cmd.
   2. Second cmd: the input is mltb.video so this cmd will work on all videos and the output is only mltb so the extension is same as input files.
   3. Third cmd: the input in mltb.m4a so this cmd will work only on m4a audios and the output is mltb.mp3 so the output extension is mp3.
@@ -306,17 +307,17 @@ Fill up rest of the fields. Meaning of each field is discussed below.
   5. FFmpeg Variables in last cmd which is metadata ({title}, {title2}, etc...), you can edit them in usetting
   6. Telegram link for small size inputs like photo to set watermark.
 
-- `NAME_SUBSTITUTE` (`Str`): Add word/letter/character/sentence/pattern to remove or replace with other words with sensitive case or without. 
+- `NAME_SUBSTITUTE` (`Str`): Add word/letter/character/sentence/pattern to remove or replace with other words with sensitive case or without.
   **Notes**:
-    - Before any character you must add `\BACKSLASH`, those are the characters: `\^$.|?*+()[]{}-`
-    * Example: script/code/s | mirror/leech | tea/ /s | clone | cpu/ | \[mltb\]/mltb | \\text\\/text/s
-    - script will get replaced by code with sensitive case
-    - mirror will get replaced by leech
-    - tea will get replaced by space with sensitive case
-    - clone will get removed
-    - cpu will get replaced by space
-    - [mltb] will get replaced by mltb
-    - \text\ will get replaced by text with sensitive case
+  - Before any character you must add `\BACKSLASH`, those are the characters: `\^$.|?*+()[]{}-`
+  - Example: script/code/s | mirror/leech | tea/ /s | clone | cpu/ | \[mltb\]/mltb | \\text\\/text/s
+  - script will get replaced by code with sensitive case
+  - mirror will get replaced by leech
+  - tea will get replaced by space with sensitive case
+  - clone will get removed
+  - cpu will get replaced by space
+  - [mltb] will get replaced by mltb
+  - \text\ will get replaced by text with sensitive case
 
 **3. GDrive Tools**
 
@@ -324,7 +325,7 @@ Fill up rest of the fields. Meaning of each field is discussed below.
 
 - `IS_TEAM_DRIVE` (`Bool`): Set `True` if uploading to TeamDrive using google-api-python-client. Default is `False`.
 
-- `INDEX_URL` (`Str`): Refer to <https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index>. Example: https://xxx.xx.workers.dev/0: (If you have multiple ID config -- replace 0: with the desired id index) or https://xxx.xx.workers.dev without index if you only have one ID in config which is the basic config.
+- `INDEX_URL` (`Str`): Refer to <https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index>. Example: <https://xxx.xx.workers.dev/0>: (If you have multiple ID config -- replace 0: with the desired id index) or <https://xxx.xx.workers.dev> without index if you only have one ID in config which is the basic config.
 
 - `STOP_DUPLICATE` (`Bool`): Bot will check file/folder name in Drive incase uploading to `GDRIVE_ID`. If it's present in Drive then downloading or cloning will be stopped. (**NOTE**: Item will be checked using name and not hash, so this feature is not perfect). Default is `False`.
 
@@ -382,25 +383,24 @@ Fill up rest of the fields. Meaning of each field is discussed below.
 - `BASE_URL_PORT` (`Int`): Which is the **BASE_URL** Port. Default is `80`.
 
 - `WEB_PINCODE` (`Bool`): Whether to ask for pincode before selecting files from torrent in web or not. Default is `False`.
-    - **Qbittorrent NOTE**: If your facing ram issues then set limit for `MaxConnections`, decrease `AsyncIOThreadsCount`, set limit of `DiskWriteCacheSize` to `32` and decrease `MemoryWorkingSetLimit` from qbittorrent.conf or bsetting command.
-    - Open port 8090 in your vps to access webui from any device. username: mltb, password: mltbmltb
+  - **Qbittorrent NOTE**: If your facing ram issues then set limit for `MaxConnections`, decrease `AsyncIOThreadsCount`, set limit of `DiskWriteCacheSize` to `32` and decrease `MemoryWorkingSetLimit` from qbittorrent.conf or bsetting command.
+  - Open port 8090 in your vps to access webui from any device. username: mltb, password: mltbmltb
 
 **8. JDownloader**
 
 - `JD_EMAIL` (`Str`): jdownloader email sign up on [JDownloader](https://my.jdownloader.org/).
 
 - `JD_PASS` (`Str`): jdownloader password.
-  - **JDownloader Config**: You can use your config from local machine in bot by *zipping* cfg folder (cfg.zip) and add it in repo folder.
+  - **JDownloader Config**: You can use your config from local machine in bot by _zipping_ cfg folder (cfg.zip) and add it in repo folder.
 
 **9. Sabnzbd**
 
 - `USENET_SERVERS` (`List`): list of dictionaries, you can add as much as you want and there is a button for servers in sabnzbd settings to edit current servers and add new servers.
 
-  ***[{'name': 'main', 'host': '', 'port': 563, 'timeout': 60, 'username': '', 'password': '', 'connections': 8, 'ssl': 1, 'ssl_verify': 2, 'ssl_ciphers': '', 'enable': 1, 'required': 0, 'optional': 0, 'retention': 0, 'send_group': 0, 'priority': 0}]***
-
+  **_[{'name': 'main', 'host': '', 'port': 563, 'timeout': 60, 'username': '', 'password': '', 'connections': 8, 'ssl': 1, 'ssl_verify': 2, 'ssl_ciphers': '', 'enable': 1, 'required': 0, 'optional': 0, 'retention': 0, 'send_group': 0, 'priority': 0}]_**
   - [READ THIS FOR MORE INFORMATION](https://sabnzbd.org/wiki/configuration/4.2/servers)
 
-  - Open port 8070 in your vps to access full web interface from any device. Use it like http://ip:8070/sabnzbd/. username: mltb, password: mltbmltb
+  - Open port 8070 in your vps to access full web interface from any device. Use it like <http://ip:8070/sabnzbd/>. username: mltb, password: mltbmltb
 
 **10. RSS**
 
@@ -409,7 +409,7 @@ Fill up rest of the fields. Meaning of each field is discussed below.
 - `RSS_SIZE_LIMIT` (`INT`): Item size limit in bytes. Default is `0`.
 
 - `RSS_CHAT` (`Int`|`Str`): Chat `ID or USERNAME or ID|TOPIC_ID or USERNAME|TOPIC_ID` where rss links will be sent. If you want message to be sent to the channel then add channel id. Add `-100` before channel id.
-    - **RSS NOTES**: `RSS_CHAT` is required, otherwise monitor will not work. You must use `USER_STRING_SESSION` --OR-- *CHANNEL*. If using channel then bot should be added in both channel and group(linked to channel) and `RSS_CHAT` is the channel id, so messages sent by the bot to channel will be forwarded to group. Otherwise with `USER_STRING_SESSION` add group id for `RSS_CHAT`. If `DATABASE_URL` not added you will miss the feeds while bot offline.
+  - **RSS NOTES**: `RSS_CHAT` is required, otherwise monitor will not work. You must use `USER_STRING_SESSION` --OR-- _CHANNEL_. If using channel then bot should be added in both channel and group(linked to channel) and `RSS_CHAT` is the channel id, so messages sent by the bot to channel will be forwarded to group. Otherwise with `USER_STRING_SESSION` add group id for `RSS_CHAT`. If `DATABASE_URL` not added you will miss the feeds while bot offline.
 
 **11. Queue System**
 
@@ -422,8 +422,8 @@ Fill up rest of the fields. Meaning of each field is discussed below.
 **12. Torrent Search**
 
 - `SEARCH_API_LINK` (`Str`): Search api app link. Get your api from deploying this [repository](https://github.com/Ryuk-me/Torrent-Api-py).
-    - Supported Sites:
-  > 1337x, Piratebay, Nyaasi, Torlock, Torrent Galaxy, Zooqle, Kickass, Bitsearch, MagnetDL, Libgen, YTS, Limetorrent, TorrentFunk, Glodls, TorrentProject and YourBittorrent
+  - Supported Sites:
+    > 1337x, Piratebay, Nyaasi, Torlock, Torrent Galaxy, Zooqle, Kickass, Bitsearch, MagnetDL, Libgen, YTS, Limetorrent, TorrentFunk, Glodls, TorrentProject and YourBittorrent
 
 - `SEARCH_LIMIT` (`Int`): Search limit for search api, limit for each site and not overall result limit. Default is zero (Default api limit for each site).
 
@@ -435,7 +435,7 @@ Fill up rest of the fields. Meaning of each field is discussed below.
 
 - `HYDRA_API_KEY` (`Str`): API key from [nzbhydra2](https://github.com/theotherp/nzbhydra2).
 
-------
+---
 
 </details>
 </details>
@@ -446,10 +446,10 @@ Fill up rest of the fields. Meaning of each field is discussed below.
 Make sure you still mount the repo folder and installed the docker from official documentation.
 
 - There are two methods to build and run the docker:
-    1. Using official docker commands.
-    2. Using docker compose plugin. (Recommended)
+  1. Using official docker commands.
+  2. Using docker compose plugin. (Recommended)
 
-------
+---
 
 <details>
   <summary><h3>Using Official Docker Commands</h3></summary>
@@ -476,7 +476,7 @@ sudo docker ps
 sudo docker stop id
 ```
 
-----
+---
 
 </details>
 
@@ -519,12 +519,13 @@ sudo docker compose start
 sudo docker compose logs --follow
 ```
 
-------
+---
 
 </details>
 
 **IMPORTANT NOTES**:
-1. Flush your machine iptables to use your opened ports with docker from the host network. 
+
+1. Flush your machine iptables to use your opened ports with docker from the host network.
 
 ```
 # Flush All Rules (Reset iptables)
@@ -556,11 +557,11 @@ sudo iptables-save | sudo tee /etc/iptables/rules.v4
 sudo ip6tables-save | sudo tee /etc/iptables/rules.v6
 ```
 
-2. Set `BASE_URL_PORT` and `RCLONE_SERVE_PORT` variables to any port you want to use. Default is `80` and `8080` respectively.
+1. Set `BASE_URL_PORT` and `RCLONE_SERVE_PORT` variables to any port you want to use. Default is `80` and `8080` respectively.
 
-3. Check the number of processing units of your machine with `nproc` cmd and times it by 4, then edit `AsyncIOThreadsCount` in qBittorrent.conf or while bot working from bsetting->qbittorrent settings.
+2. Check the number of processing units of your machine with `nproc` cmd and times it by 4, then edit `AsyncIOThreadsCount` in qBittorrent.conf or while bot working from bsetting->qbittorrent settings.
 
-------
+---
 
 </details>
 </details>
@@ -608,7 +609,7 @@ ping - Ping the Bot
 help - All cmds with description
 ```
 
-------
+---
 
 </details>
 
@@ -637,7 +638,7 @@ pip3 install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 python3 generate_drive_token.py
 ```
 
-------
+---
 
 </details>
 
@@ -648,7 +649,7 @@ python3 generate_drive_token.py
 2. Create new remote(s) using `rclone config` command.
 3. Copy rclone.conf from your system’s config directory into the repo root. For example:
 
-------
+---
 
 </details>
 
@@ -663,7 +664,7 @@ python3 generate_drive_token.py
 - Whenever you want to write path manually to use user rclone.conf that added from usetting then you must add the `mrcc:` at the beginning.
 - So in short, up: has 4 possible values which are: `gd` (Upload to GDRIVE_ID), `rc` (Upload to RCLONE_PATH), `rcl` (Select Rclone Path) and `rclone_path` (remote:path (owner rclone.conf) or `mrcc`:remote:path (user rclone.conf))
 
-------
+---
 
 </details>
 
@@ -678,7 +679,7 @@ python3 generate_drive_token.py
 - In case you you filled `UPSTREAM_REPO` with your fork link be careful also if you fetched the commits from the official repository.
 - The changes in your `UPSTREAM_REPO` will take affect only after restart.
 
-------
+---
 
 </details>
 
@@ -691,7 +692,7 @@ python3 generate_drive_token.py
   <summary><h3>QBittorrent</h3></summary>
 
 - Global options: `GlobalMaxRatio` and `GlobalMaxSeedingMinutes` in qbittorrent.conf, `-1` means no limit, but you can cancel manually.
-    - **NOTE**: Don't change `MaxRatioAction`.
+  - **NOTE**: Don't change `MaxRatioAction`.
 
 </details>
 
@@ -700,7 +701,7 @@ python3 generate_drive_token.py
 
 - Global options: `--seed-ratio` (0 means no limit) and `--seed-time` (0 means no seed) in aria.sh.
 
-------
+---
 
 </details>
 </details>
@@ -820,7 +821,7 @@ Then add emails from emails.txt to Google Group, after that add this Google Grou
 python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 ```
 
-------
+---
 
 </details>
 </details>
@@ -832,11 +833,11 @@ python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 1. Go to `https://mongodb.com/` and sign-up.
 2. Create Shared Cluster.
 3. Press on `Database` under `Deployment` Header, your created cluster will be there.
-5. Press on connect, choose `Allow Access From Anywhere` and press on `Add IP Address` without editing the ip, then create user.
-6. After creating user press on `Choose a connection`, then press on `Connect your application`. Choose `Driver` **python** and `version` **3.12 or later**.
-7. Copy your `connection string` and replace `<password>` with the password of your user, then press close.
+4. Press on connect, choose `Allow Access From Anywhere` and press on `Add IP Address` without editing the ip, then create user.
+5. After creating user press on `Choose a connection`, then press on `Connect your application`. Choose `Driver` **python** and `version` **3.12 or later**.
+6. Copy your `connection string` and replace `<password>` with the password of your user, then press close.
 
-------
+---
 
 </details>
 
@@ -857,7 +858,7 @@ TD1 root https://example.dev
 TD2 0AO1JDB1t3i5jUk9PVA https://example.dev
 ```
 
------
+---
 
 </details>
 
@@ -879,17 +880,16 @@ Using Aria2c you can also use built in feature from bot with or without username
 ```
 machine example.workers.dev password index_password
 ```
+
 Where host is the name of extractor (eg. instagram, Twitch). Multiple accounts of different hosts can be added each separated by a new line.
 
-**Yt-dlp**: 
+**Yt-dlp**:
 Authentication using [cookies.txt](https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies) file. CREATE IT IN INCOGNITO TAB.
 
-
------
+---
 
 </details>
 </details>
-
 
 # All Thanks To Our Contributors
 
@@ -920,6 +920,7 @@ Network:
 ```
 TRC20
 ```
+
 TRX Address:
 
 ```
@@ -944,4 +945,4 @@ ETH Address:
 0xf798a8a1c72d593e16d8f3bb619ebd1a093c7309
 ```
 
------
+---
