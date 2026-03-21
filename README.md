@@ -1,7 +1,6 @@
-This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/python-aria-mirror-bot), has undergone
-substantial modifications and is designed for efficiently mirroring or leeching files from the Internet to various
-destinations, including Google Drive, Telegram, or any rclone-supported cloud. It is built using asynchronous
-programming in Python.
+# Mirror Leech Telegram Bot
+
+This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/python-aria-mirror-bot), has undergone substantial modifications and is designed for efficiently mirroring or leeching files from the Internet to various destinations, including Google Drive, Telegram, or any rclone-supported cloud. It is built using asynchronous programming in Python.
 
 - **TELEGRAM CHANNEL:** https://t.me/mltb_official_channel
 - **TELEGRAM GROUP:** https://t.me/mltb_official_support
@@ -25,8 +24,7 @@ programming in Python.
 - Select files from a Torrent before and during download (Requires Base URL) (task option)
 - Seed torrents to a specific ratio and time (task option)
 - Netrc support (global option)
-- Direct link authentication for a specific link while using the bot (it will work even if only the username or password
-  is provided) (task option)
+- Direct link authentication for a specific link while using the bot (it will work even if only the username or password is provided) (task option)
 - Edit Global Options while the bot is running from bot settings (global option)
 
 </details>
@@ -67,13 +65,11 @@ programming in Python.
 - Search in multiple Drive folder/TeamDrive
 - Use Token.pickle if the file is not found with a Service Account, for all Gdrive functions
 - Random Service Account for each task
-- Recursive Search (only with `root` or TeamDrive ID, folder ids will be listed with a non-recursive method). Based
-  on [Sreeraj](https://github.com/SVR666) searchX-bot. (task option)
+- Recursive Search (only with `root` or TeamDrive ID, folder ids will be listed with a non-recursive method). Based on [Sreeraj](https://github.com/SVR666) searchX-bot. (task option)
 - Stop Duplicates (global and user option)
 - Custom upload destination (global, user, and task option)
 - Ability to choose token.pickle or service account and upload destinations from list with or without buttons (global, user and task option)
-- Index link support only
-  for [Bhadoo](https://gitlab.com/GoogleDriveIndex/Google-Drive-Index/-/blob/master/src/worker.js)
+- Index link support only for [Bhadoo](https://gitlab.com/GoogleDriveIndex/Google-Drive-Index/-/blob/master/src/worker.js)
 
 </details>
 
@@ -97,8 +93,7 @@ programming in Python.
 - Status Pages for an unlimited number of tasks, view a specific number of tasks in a message (global option)
 - Interval message update (global option)
 - Next/Previous buttons to get different pages (global and user option)
-- Status buttons to get specific tasks for the chosen status regarding transfer type if the number of tasks is more than
-  30 (global and user option)
+- Status buttons to get specific tasks for the chosen status regarding transfer type if the number of tasks is more than 30 (global and user option)
 - Steps buttons for how much next/previous buttons should step backward/forward (global and user option)
 - Status for each user (no auto refresh)
 
@@ -122,8 +117,7 @@ programming in Python.
 - Synchronize Settings (global option)
 - Waiting to select (enable/disable files or change variants) before download start
 - DLC file support
-- All settings can be edited from the remote access to your JDownloader with Web Interface, Android App, iPhone App or
-  Browser Extensions
+- All settings can be edited from the remote access to your JDownloader with Web Interface, Android App, iPhone App or Browser Extensions
 
 </details>
 
@@ -135,8 +129,7 @@ programming in Python.
 - Store RSS data
 - Store incompleted task messages
 - Store JDownloader settings
-- Store config.py file on first build and incase any change occurred to it, then next build it will define variables
-  from config.py instead of database
+- Store config.py file on first build and incase any change occurred to it, then next build it will define variables from config.py instead of database
 
 </details>
 
@@ -178,8 +171,7 @@ programming in Python.
 - Telegraph. Based on [Sreeraj](https://github.com/SVR666) loaderX-bot
 - Mirror/Leech/Watch/Clone/Count/Del by reply
 - Mirror/Leech/Clone multi links/files with one command
-- Custom name for all links except torrents. For files you should add extension except yt-dlp links (global and user
-  option)
+- Custom name for all links except torrents. For files you should add extension except yt-dlp links (global and user option)
 - Exclude files with specific extensions from being uploaded/cloned (global and user option)
 - View Link button. Extra button to open index link in browser instead of direct download for file
 - Queueing System for all tasks (global option)
@@ -200,14 +192,7 @@ programming in Python.
 - FFmpeg commands to execute it after download (task option)
 - Supported Direct links Generators:
 
-> mediafire (file/folders), hxfile.co (need cookies txt with name) [hxfile.txt], streamtape.com, streamsb.net, streamhub.ink,
-> streamvid.net, doodstream.com,
-> feurl.com, upload.ee, pixeldrain.com, racaty.net, 1fichier.com, 1drv.ms (Only works for file not folder or business
-> account), filelions.com, streamwish.com, send.cm (file/folders), solidfiles.com, linkbox.to (file/folders),
-> shrdsk.me (
-> sharedisk.io), akmfiles.com, wetransfer.com, pcloud.link, gofile.io (file/folders), easyupload.io, mdisk.me (with
-> ytdl),
-> tmpsend.com, qiwi.gg, berkasdrive.com, mp4upload.com, terabox.com (videos only file/folders).
+> mediafire (file/folders), hxfile.co (need cookies txt with name) [hxfile.txt], streamtape.com, streamsb.net, streamhub.ink, streamvid.net, doodstream.com, feurl.com, upload.ee, pixeldrain.com, racaty.net, 1fichier.com, 1drv.ms (Only works for file not folder or business account), filelions.com, streamwish.com, send.cm (file/folders), solidfiles.com, linkbox.to (file/folders), shrdsk.me (sharedisk.io), akmfiles.com, wetransfer.com, pcloud.link, gofile.io (file/folders), easyupload.io, mdisk.me (with ytdl), tmpsend.com, qiwi.gg, berkasdrive.com, mp4upload.com, terabox.com (videos only file/folders).
 
 </details>
 </details>
@@ -266,11 +251,9 @@ Fill up rest of the fields. Meaning of each field is discussed below.
 
 - `OWNER_ID` (`Int`):  The Telegram User ID (not username) of the Owner of the bot.
 
-- `TELEGRAM_API` (`Int`): This is to authenticate your Telegram account for downloading Telegram files. You can get this
-  from <https://my.telegram.org>.
+- `TELEGRAM_API` (`Int`): This is to authenticate your Telegram account for downloading Telegram files. You can get this from <https://my.telegram.org>.
 
-- `TELEGRAM_HASH` (`Str`):  This is to authenticate your Telegram account for downloading Telegram files. You can get this
-  from <https://my.telegram.org>.
+- `TELEGRAM_HASH` (`Str`):  This is to authenticate your Telegram account for downloading Telegram files. You can get this from <https://my.telegram.org>.
 
 **2. Optional Fields**
 - `TG_PROXY` (`Dict`): The Proxy settings as dict. Ex: {"scheme": "socks5", "hostname": "11.22.33.44", "port": 1234, "username": "user", "password": "pass"}. The username and password can be omitted if the proxy doesn’t require authorization.
@@ -297,21 +280,16 @@ Fill up rest of the fields. Meaning of each field is discussed below.
 
 - `INCLUDED_EXTENSIONS` (`Str`): File extensions to be uploaded/cloned. `EXCLUDED_EXTENSIONS` will be ignore if you filled this ! Separate them by spaces.
 
-- `INCOMPLETE_TASK_NOTIFIER` (`Bool`): Get incomplete task messages after restart. Require database and superGroup. Default
-is `False`.
+- `INCOMPLETE_TASK_NOTIFIER` (`Bool`): Get incomplete task messages after restart. Require database and superGroup. Default is `False`.
 
-- `FILELION_API` (`Str`): Filelion api key to mirror Filelion links. Get it
-from [Filelion](https://vidhide.com/?op=my_account).
+- `FILELION_API` (`Str`): Filelion api key to mirror Filelion links. Get it from [Filelion](https://vidhide.com/?op=my_account).
 
-- `STREAMWISH_API` (`Str`): Streamwish api key to mirror Streamwish links. Get it
-from [Streamwish](https://streamwish.com/?op=my_account).
+- `STREAMWISH_API` (`Str`): Streamwish api key to mirror Streamwish links. Get it from [Streamwish](https://streamwish.com/?op=my_account).
 
-- `YT_DLP_OPTIONS` (`Dict`): Dict of yt-dlp options. Check all possible
-options [HERE](https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/YoutubeDL.py#L184) or use this [script](https://t.me/mltb_official_channel/177) to convert cli arguments to api options. Format: {key: value, key: value, key: value}.
+- `YT_DLP_OPTIONS` (`Dict`): Dict of yt-dlp options. Check all possible options [HERE](https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/YoutubeDL.py#L184) or use this [script](https://t.me/mltb_official_channel/177) to convert cli arguments to api options. Format: {key: value, key: value, key: value}.
   - Example: {"format": "bv*+mergeall[vcodec=none]", "nocheckcertificate": True, "playliststart": 10, "fragment_retries": float("inf"), "matchtitle": "S13", "writesubtitles": True, "live_from_start": True, "postprocessor_args": {"ffmpeg": ["-threads", "4"]}, "wait_for_video": (5, 100), "download_ranges": [{"start_time": 0, "end_time": 10}]}
 
-- `USE_SERVICE_ACCOUNTS` (`Bool`): Whether to use Service Accounts or not, with google-api-python-client. For this to work
-see [Using Service Accounts](https://github.com/anasty17/mirror-leech-telegram-bot#generate-service-accounts-what-is-service-account) section below. Default is `False`.
+- `USE_SERVICE_ACCOUNTS` (`Bool`): Whether to use Service Accounts or not, with google-api-python-client. For this to work see [Using Service Accounts](https://github.com/anasty17/mirror-leech-telegram-bot#generate-service-accounts-what-is-service-account) section below. Default is `False`.
 
 - `FFMPEG_CMDS` (`Dict`): Dict of list values of ffmpeg commands. You can set multiple ffmpeg commands for all files before upload. Don't write ffmpeg at beginning, start directly with the arguments. `Dict`
   - Examples: {"subtitle": ["-i mltb.mkv -c copy -c:s srt mltb.mkv", "-i mltb.video -c copy -c:s srt mltb"], "convert": ["-i mltb.m4a -c:a libmp3lame -q:a 2 mltb.mp3", "-i mltb.audio -c:a libmp3lame -q:a 2 mltb.mp3"], extract: ["-i mltb -map 0:a -c copy mltb.mka -map 0:s -c copy mltb.srt"], "metadata": ["-i mltb.mkv -map 0 -map -0:v:1 -map -0:s -map 0:s:0 -map -0:v:m:attachment -c copy -metadata:s:v:0 title={title} -metadata:s:a:0 title={title} -metadata:s:a:1 title={title2} -metadata:s:a:2 title={title2} -c:s srt -metadata:s:s:0 title={title3} mltb -y -del"], "watermark": ["-i mltb -i tg://openmessage?user_id=5272663208&message_id=322801 -filter_complex 'overlay=W-w-10:H-h-10' -c:a copy mltb"]}
@@ -445,8 +423,7 @@ see [Using Service Accounts](https://github.com/anasty17/mirror-leech-telegram-b
 
 - `SEARCH_API_LINK` (`Str`): Search api app link. Get your api from deploying this [repository](https://github.com/Ryuk-me/Torrent-Api-py).
     - Supported Sites:
-  > 1337x, Piratebay, Nyaasi, Torlock, Torrent Galaxy, Zooqle, Kickass, Bitsearch, MagnetDL, Libgen, YTS, Limetorrent,
-  TorrentFunk, Glodls, TorrentProject and YourBittorrent
+  > 1337x, Piratebay, Nyaasi, Torlock, Torrent Galaxy, Zooqle, Kickass, Bitsearch, MagnetDL, Libgen, YTS, Limetorrent, TorrentFunk, Glodls, TorrentProject and YourBittorrent
 
 - `SEARCH_LIMIT` (`Int`): Search limit for search api, limit for each site and not overall result limit. Default is zero (Default api limit for each site).
 
@@ -579,11 +556,9 @@ sudo iptables-save | sudo tee /etc/iptables/rules.v4
 sudo ip6tables-save | sudo tee /etc/iptables/rules.v6
 ```
 
-2. Set `BASE_URL_PORT` and `RCLONE_SERVE_PORT` variables to any port you want to use. Default is `80` and `8080`
-   respectively.
+2. Set `BASE_URL_PORT` and `RCLONE_SERVE_PORT` variables to any port you want to use. Default is `80` and `8080` respectively.
 
-3. Check the number of processing units of your machine with `nproc` cmd and times it by 4, then
-   edit `AsyncIOThreadsCount` in qBittorrent.conf or while bot working from bsetting->qbittorrent settings.
+3. Check the number of processing units of your machine with `nproc` cmd and times it by 4, then edit `AsyncIOThreadsCount` in qBittorrent.conf or while bot working from bsetting->qbittorrent settings.
 
 ------
 
@@ -642,11 +617,8 @@ help - All cmds with description
 
 **NOTES**
 
-- Old authentication changed, now we can't use bot or replit to generate token.pickle. You need OS with a local browser.
-  For example `Termux`.
-- Windows users should install python3 and pip. You can find how to install and use them from google or from
-  this [telegraph](https://telegra.ph/Create-Telegram-Mirror-Leech-Bot-by-Deploying-App-with-Heroku-Branch-using-Github-Workflow-12-06)
-  from [Wiszky](https://github.com/vishnoe115) tutorial.
+- Old authentication changed, now we can't use bot or replit to generate token.pickle. You need OS with a local browser. For example `Termux`.
+- Windows users should install python3 and pip. You can find how to install and use them from google or from this [telegraph](https://telegra.ph/Create-Telegram-Mirror-Leech-Bot-by-Deploying-App-with-Heroku-Branch-using-Github-Workflow-12-06) from [Wiszky](https://github.com/vishnoe115) tutorial.
 - You can ONLY open the generated link from `generate_drive_token.py` in a local browser.
 
 1. Visit the [Google Cloud Console](https://console.developers.google.com/apis/credentials)
@@ -683,16 +655,12 @@ python3 generate_drive_token.py
 <details>
   <summary><h5>Upload</h5></summary>
 
-- `RCLONE_PATH` is like `GDRIVE_ID` a default path for mirror. In additional to those variables `DEFAULT_UPLOAD` to
-  choose the default tool whether it's rclone or google-api-python-client.
-- If `DEFAULT_UPLOAD` = 'rc' then you must fill `RCLONE_PATH` with path as default one or with `rcl` to select
-  destination path on each new task.
+- `RCLONE_PATH` is like `GDRIVE_ID` a default path for mirror. In additional to those variables `DEFAULT_UPLOAD` to choose the default tool whether it's rclone or google-api-python-client.
+- If `DEFAULT_UPLOAD` = 'rc' then you must fill `RCLONE_PATH` with path as default one or with `rcl` to select destination path on each new task.
 - If `DEFAULT_UPLOAD` = 'gd' then you must fill `GDRIVE_ID` with folder/TD id.
-- rclone.conf can be added before deploy like token.pickle to repo folder root or use bsetting to upload it as private
-  file.
+- rclone.conf can be added before deploy like token.pickle to repo folder root or use bsetting to upload it as private file.
 - If rclone.conf uploaded from usetting or added in `rclone/{user_id}.conf` then `RCLONE_PATH` must start with `mrcc:`.
-- Whenever you want to write path manually to use user rclone.conf that added from usetting then you must add
-  the `mrcc:` at the beginning.
+- Whenever you want to write path manually to use user rclone.conf that added from usetting then you must add the `mrcc:` at the beginning.
 - So in short, up: has 4 possible values which are: `gd` (Upload to GDRIVE_ID), `rc` (Upload to RCLONE_PATH), `rcl` (Select Rclone Path) and `rclone_path` (remote:path (owner rclone.conf) or `mrcc`:remote:path (user rclone.conf))
 
 ------
@@ -704,17 +672,10 @@ python3 generate_drive_token.py
 
 - `UPSTREAM_REPO` variable can be used for edit/add any file in repository.
 - You can add private/public repository link to grab/overwrite all files from it.
-- You can skip adding the private files like token.pickle or accounts folder before deploying, simply
-  fill `UPSTREAM_REPO` private one incase you want to grab all files including private files.
-- If you added private files while deploying and you have added private `UPSTREAM_REPO` and your private files in this
-  private repository, so your private files will be overwritten from this repository. Also if you are using database for
-  private files, then all files from database will override the private files that added before deploying or from
-  private `UPSTREAM_REPO`.
-- If you filled `UPSTREAM_REPO` with the official repository link, then be careful in case any change in
-  requirements.txt your bot will not start after restart. In this case you need to deploy again with updated code to
-  install the new requirements or simply by changing the `UPSTREAM_REPO` to you fork link with that old updates.
-- In case you you filled `UPSTREAM_REPO` with your fork link be careful also if you fetched the commits from the
-  official repository.
+- You can skip adding the private files like token.pickle or accounts folder before deploying, simply fill `UPSTREAM_REPO` private one incase you want to grab all files including private files.
+- If you added private files while deploying and you have added private `UPSTREAM_REPO` and your private files in this private repository, so your private files will be overwritten from this repository. Also if you are using database for private files, then all files from database will override the private files that added before deploying or from private `UPSTREAM_REPO`.
+- If you filled `UPSTREAM_REPO` with the official repository link, then be careful in case any change in requirements.txt your bot will not start after restart. In this case you need to deploy again with updated code to install the new requirements or simply by changing the `UPSTREAM_REPO` to you fork link with that old updates.
+- In case you you filled `UPSTREAM_REPO` with your fork link be careful also if you fetched the commits from the official repository.
 - The changes in your `UPSTREAM_REPO` will take affect only after restart.
 
 ------
@@ -729,8 +690,7 @@ python3 generate_drive_token.py
 <details>
   <summary><h3>QBittorrent</h3></summary>
 
-- Global options: `GlobalMaxRatio` and `GlobalMaxSeedingMinutes` in qbittorrent.conf, `-1` means no limit, but you can
-  cancel manually.
+- Global options: `GlobalMaxRatio` and `GlobalMaxSeedingMinutes` in qbittorrent.conf, `-1` means no limit, but you can cancel manually.
     - **NOTE**: Don't change `MaxRatioAction`.
 
 </details>
@@ -755,9 +715,7 @@ python3 generate_drive_token.py
   <summary><h3>1. Generate Service Accounts. <a href="https://cloud.google.com/iam/docs/service-accounts">What is Service Account?</a></h3></summary>
 Let us create only the Service Accounts that we need.
 
-**Warning**: Abuse of this feature is not the aim of this project and we do **NOT** recommend that you make a lot of
-projects, just one project and 100 SAs allow you plenty of use, its also possible that over abuse might get your
-projects banned by Google.
+**Warning**: Abuse of this feature is not the aim of this project and we do **NOT** recommend that you make a lot of projects, just one project and 100 SAs allow you plenty of use, its also possible that over abuse might get your projects banned by Google.
 
 > **NOTE**: If you have created SAs in past from this script, you can also just re download the keys by running:
 
@@ -765,12 +723,9 @@ projects banned by Google.
 python3 gen_sa_accounts.py --download-keys $PROJECTID
 ```
 
-> **NOTE:** 1 Service Account can upload/copy around 750 GB a day, 1 project can make 100 Service Accounts so you can
-> upload 75 TB a day.
+> **NOTE:** 1 Service Account can upload/copy around 750 GB a day, 1 project can make 100 Service Accounts so you can upload 75 TB a day.
 
-> **NOTE:** All people can copy `2TB/DAY` from each file creator (uploader account), so if you got
-> error `userRateLimitExceeded` that doesn't mean your limit exceeded but file creator limit have been exceeded which
-> is `2TB/DAY`.
+> **NOTE:** All people can copy `2TB/DAY` from each file creator (uploader account), so if you got error `userRateLimitExceeded` that doesn't mean your limit exceeded but file creator limit have been exceeded which is `2TB/DAY`.
 
 #### Two methods to create service accounts
 
@@ -852,8 +807,7 @@ grep -oPh '"client_email": "\K[^"]+' *.json > emails.txt
 cd ..
 ```
 
-Then add emails from emails.txt to Google Group, after that add this Google Group to your Shared Drive and promote it to
-manager and delete email.txt file from accounts folder
+Then add emails from emails.txt to Google Group, after that add this Google Group to your Shared Drive and promote it to manager and delete email.txt file from accounts folder
 
 </details>
 
@@ -878,10 +832,8 @@ python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 1. Go to `https://mongodb.com/` and sign-up.
 2. Create Shared Cluster.
 3. Press on `Database` under `Deployment` Header, your created cluster will be there.
-5. Press on connect, choose `Allow Access From Anywhere` and press on `Add IP Address` without editing the ip, then
-   create user.
-6. After creating user press on `Choose a connection`, then press on `Connect your application`. Choose `Driver` *
-   *python** and `version` **3.12 or later**.
+5. Press on connect, choose `Allow Access From Anywhere` and press on `Add IP Address` without editing the ip, then create user.
+6. After creating user press on `Choose a connection`, then press on `Connect your application`. Choose `Driver` **python** and `version` **3.12 or later**.
 7. Copy your `connection string` and replace `<password>` with the password of your user, then press close.
 
 ------
@@ -891,8 +843,7 @@ python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 <details>
   <summary><h5>Multi Drive List</h5></summary>
 
-To use list from multi TD/folder. Run driveid.py in your terminal and follow it. It will generate **list_drives.txt**
-file or u can simply create `list_drives.txt` file in working directory and fill it, check below format:
+To use list from multi TD/folder. Run driveid.py in your terminal and follow it. It will generate **list_drives.txt** file or u can simply create `list_drives.txt` file in working directory and fill it, check below format:
 
 ```
 DriveName folderID/tdID or `root` IndexLink(if available)
@@ -913,8 +864,7 @@ TD2 0AO1JDB1t3i5jUk9PVA https://example.dev
 <details>
   <summary><h5>Yt-dlp and Aria2c Authentication Using .netrc File</h5></summary>
 
-For using your premium accounts in yt-dlp or for protected Index Links, create .netrc file according to following
-format:
+For using your premium accounts in yt-dlp or for protected Index Links, create .netrc file according to following format:
 
 **Note**: Create .netrc and not netrc, this file will be hidden, so view hidden files to edit it after creation.
 
@@ -924,14 +874,12 @@ Format:
 machine host login username password my_password
 ```
 
-Using Aria2c you can also use built in feature from bot with or without username. Here example for index link without
-username.
+Using Aria2c you can also use built in feature from bot with or without username. Here example for index link without username.
 
 ```
 machine example.workers.dev password index_password
 ```
-Where host is the name of extractor (eg. instagram, Twitch). Multiple accounts of different hosts can be added each
-separated by a new line.
+Where host is the name of extractor (eg. instagram, Twitch). Multiple accounts of different hosts can be added each separated by a new line.
 
 **Yt-dlp**: 
 Authentication using [cookies.txt](https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies) file. CREATE IT IN INCOGNITO TAB.
