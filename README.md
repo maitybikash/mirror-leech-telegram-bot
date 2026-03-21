@@ -1,4 +1,4 @@
-# Mirror Leech Telegram Bot
+# Mirror Leech Bot
 
 This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/python-aria-mirror-bot), has undergone substantial modifications and is designed for efficiently mirroring or leeching files from the Internet to various destinations, including Google Drive, Telegram, or any rclone-supported cloud. It is built using asynchronous programming in Python.
 
@@ -637,7 +637,9 @@ python3 generate_drive_token.py
 
 > **NOTE**: Using Service Accounts is only recommended while uploading to a Team Drive.
 
-### 1. Generate Service Accounts. <a href="https://cloud.google.com/iam/docs/service-accounts">What is Service Account?</a>
+### 1. Generate Service Accounts. 
+
+<a href="https://cloud.google.com/iam/docs/service-accounts">What is Service Account?</a>
 
 Let us create only the Service Accounts that we need.
 
