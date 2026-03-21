@@ -5,30 +5,16 @@ This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/p
 - **TELEGRAM CHANNEL:** <https://t.me/mltb_official_channel>
 - **TELEGRAM GROUP:** <https://t.me/mltb_official_support>
 
-<details>
-  <summary>
-
 # Features
-  </summary>
-
-<details>
-  <summary>
 
 ##### QBittorrent
-  </summary>
 
 - External access to webui, so you can remove files or edit settings. Then you can sync settings in database with sync button in bsetting
 - Select files from a Torrent before and during download using mltb file selector (Requires Base URL) (task option)
 - Seed torrents to a specific ratio and time (task option)
 - Edit Global Options while the bot is running from bot settings (global option)
 
-</details>
-
-<details>
-  <summary>
-
 ##### Aria2c
-  </summary>
 
 - Select files from a Torrent before and during download (Requires Base URL) (task option)
 - Seed torrents to a specific ratio and time (task option)
@@ -36,26 +22,14 @@ This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/p
 - Direct link authentication for a specific link while using the bot (it will work even if only the username or password is provided) (task option)
 - Edit Global Options while the bot is running from bot settings (global option)
 
-</details>
-
-<details>
-  <summary>
-
 ##### Sabnzbd
-  </summary>
 
 - External access to web interface, so you can remove files or edit settings. Then you can sync settings in database with sync button in bsetting
 - Remove files from job before and during download using mltb file selector (Requires Base URL) (task option)
 - Edit Global Options while the bot is running from bot settings (global option)
 - Servers menu to edit/add/remove usenet servers
 
-</details>
-
-<details>
-  <summary>
-
 ##### TG Upload/Download
-  </summary>
 
 - Split size (global, user, and task option)
 - Thumbnail (user and task option)
@@ -70,13 +44,7 @@ This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/p
 - Upload with custom layout multiple thubnmail (global, user option and task option)
 - Topics support
 
-</details>
-
-<details>
-  <summary>
-
 ##### Google Drive
-  </summary>
 
 - Download/Upload/Clone/Delete/Count from/to Google Drive
 - Count Google Drive files/folders
@@ -89,13 +57,7 @@ This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/p
 - Ability to choose token.pickle or service account and upload destinations from list with or without buttons (global, user and task option)
 - Index link support only for [Bhadoo](https://gitlab.com/GoogleDriveIndex/Google-Drive-Index/-/blob/master/src/worker.js)
 
-</details>
-
-<details>
-  <summary>
-
 ##### Rclone
-  </summary>
 
 - Transfer (download/upload/clone-server-side) without or with random service accounts (global and user option)
 - Ability to choose config, remote and path from list with or without buttons (global, user and task option)
@@ -105,13 +67,7 @@ This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/p
 - Rclone serve for combine remote to use it as index from all remotes (global option)
 - Upload destination (global, user and task option)
 
-</details>
-
-<details>
-  <summary>
-
 ##### Status
-  </summary>
 
 - Download/Upload/Extract/Archive/Seed/Clone Status
 - Status Pages for an unlimited number of tasks, view a specific number of tasks in a message (global option)
@@ -120,14 +76,8 @@ This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/p
 - Status buttons to get specific tasks for the chosen status regarding transfer type if the number of tasks is more than 30 (global and user option)
 - Steps buttons for how much next/previous buttons should step backward/forward (global and user option)
 - Status for each user (no auto refresh)
-
-</details>
-
-<details>
-  <summary>
-
-##### Yt-dlp
-  </summary>
+-
+- ##### Yt-dlp
 
 - Yt-dlp quality buttons (task option)
 - Ability to use a specific yt-dlp option (global, user, and task option)
@@ -136,27 +86,15 @@ This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/p
 - Embed the original thumbnail and add it for leech
 - All supported audio formats
 
-</details>
-
-<details>
-  <summary>
-
 ##### JDownloader
-  </summary>
-
+  
 - Synchronize Settings (global option)
 - Waiting to select (enable/disable files or change variants) before download start
 - DLC file support
 - All settings can be edited from the remote access to your JDownloader with Web Interface, Android App, iPhone App or Browser Extensions
 
-</details>
-
-<details>
-  <summary>
-
 ##### Mongo Database
-  </summary>
-
+  
 - Store bot settings
 - Store user settings including thumbnails and all private files
 - Store RSS data
@@ -164,37 +102,19 @@ This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/p
 - Store JDownloader settings
 - Store config.py file on first build and incase any change occurred to it, then next build it will define variables from config.py instead of database
 
-</details>
-
-<details>
-  <summary>
-
 ##### Torrents Search
-  </summary>
 
 - Search on torrents with Torrent Search API
 - Search on torrents with variable plugins using qBittorrent search engine
 
-</details>
-
-<details>
-  <summary>
-
 ##### Archives
-  </summary>
 
 - Extract splits with or without password
 - Zip file/folder with or without password and splits incase of leech
 - Using 7z package to extract with or without password all supported types
 
-</details>
-
-<details>
-  <summary>
-
 ##### RSS
-  </summary>
-
+  
 - Based on this repository [rss-chan](https://github.com/hyPnOtICDo0g/rss-chan)
 - Rss feed (user option)
 - Title Filters (feed option)
@@ -202,13 +122,7 @@ This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/p
 - Sudo settings to control users feeds
 - All functions have been improved using buttons from one command.
 
-</details>
-
-<details>
-  <summary>
-
 ##### Overall
-  </summary>
 
 - Docker image support for linux `amd64, arm64/v8, arm/v7`
 - Edit variables and overwrite the private files while bot running (bot, user settings)
@@ -239,26 +153,11 @@ This Telegram Bot, based on [python-aria-mirror-bot](https://github.com/lzzy12/p
 
 > mediafire (file/folders), hxfile.co (need cookies txt with name) [hxfile.txt], streamtape.com, streamsb.net, streamhub.ink, streamvid.net, doodstream.com, feurl.com, upload.ee, pixeldrain.com, racaty.net, 1fichier.com, 1drv.ms (Only works for file not folder or business account), filelions.com, streamwish.com, send.cm (file/folders), solidfiles.com, linkbox.to (file/folders), shrdsk.me (sharedisk.io), akmfiles.com, wetransfer.com, pcloud.link, gofile.io (file/folders), easyupload.io, mdisk.me (with ytdl), tmpsend.com, qiwi.gg, berkasdrive.com, mp4upload.com, terabox.com (videos only file/folders).
 
-</details>
-</details>
-
-<details>
-  <summary>
-
 # How to deploy?
-  </summary>
-
-<details>
-  <summary>
 
 ## Prerequisites
-  </summary>
-
-<details>
-  <summary>
 
 ##### 1. Installing requirements
-  </summary>
 
 - Clone this repo:
 
@@ -288,13 +187,7 @@ pip3 install -r requirements-cli.txt
 
 ---
 
-</details>
-
-<details>
-  <summary>
-
 ##### 2. Setting up config file
-  </summary>
 
 ```
 cp config_sample.py config.py
@@ -494,15 +387,8 @@ Fill up rest of the fields. Meaning of each field is discussed below.
 
 ---
 
-</details>
-</details>
-
-<details>
-  <summary>
-
 ## Build And Run
-  </summary>
-
+  
 Make sure you still mount the repo folder and installed the docker from official documentation.
 
 - There are two methods to build and run the docker:
@@ -511,12 +397,8 @@ Make sure you still mount the repo folder and installed the docker from official
 
 ---
 
-<details>
-  <summary>
-
 ### Using Official Docker Commands
-  </summary>
-
+  
 - Build Docker image:
 
 ```
@@ -541,13 +423,7 @@ sudo docker stop id
 
 ---
 
-</details>
-
-<details>
-  <summary>
-
 ### Using Docker Compose Plugin
-  </summary>
 
 - Install docker compose plugin
 
@@ -586,8 +462,6 @@ sudo docker compose logs --follow
 ```
 
 ---
-
-</details>
 
 **IMPORTANT NOTES**:
 
@@ -629,20 +503,9 @@ sudo ip6tables-save | sudo tee /etc/iptables/rules.v6
 
 ---
 
-</details>
-</details>
-
-<details>
-  <summary>
-
 # Extras
-  </summary>
 
-<details>
-  <summary>
-
-##### Bot commands to be set in <a href="https://t.me/BotFather">@BotFather</a>
-  </summary>
+##### Bot commands
 
 ```
 mirror - or /m Mirror
@@ -683,13 +546,7 @@ help - All cmds with description
 
 ---
 
-</details>
-
-<details>
-  <summary>
-
 ##### Getting Google OAuth API credential file and token.pickle
-  </summary>
 
 **NOTES**
 
@@ -715,28 +572,16 @@ python3 generate_drive_token.py
 
 ---
 
-</details>
-
-<details>
-  <summary>
-
 ##### Generating rclone.conf
-  </summary>
-
+  
 1. Install rclone from [Official Site](https://rclone.org/install/)
 2. Create new remote(s) using `rclone config` command.
 3. Copy rclone.conf from your system’s config directory into the repo root. For example:
 
 ---
 
-</details>
-
-<details>
-  <summary>
-
 ##### Upload
-  </summary>
-
+  
 - `RCLONE_PATH` is like `GDRIVE_ID` a default path for mirror. In additional to those variables `DEFAULT_UPLOAD` to choose the default tool whether it's rclone or google-api-python-client.
 - If `DEFAULT_UPLOAD` = 'rc' then you must fill `RCLONE_PATH` with path as default one or with `rcl` to select destination path on each new task.
 - If `DEFAULT_UPLOAD` = 'gd' then you must fill `GDRIVE_ID` with folder/TD id.
@@ -747,14 +592,8 @@ python3 generate_drive_token.py
 
 ---
 
-</details>
-
-<details>
-  <summary>
-
 ##### UPSTREAM REPO (Recommended)
-  </summary>
-
+  
 - `UPSTREAM_REPO` variable can be used for edit/add any file in repository.
 - You can add private/public repository link to grab/overwrite all files from it.
 - You can skip adding the private files like token.pickle or accounts folder before deploying, simply fill `UPSTREAM_REPO` private one incase you want to grab all files including private files.
@@ -765,51 +604,27 @@ python3 generate_drive_token.py
 
 ---
 
-</details>
-
-<details>
-  <summary>
-
 ##### Bittorrent Seed
-  </summary>
 
 - Using `-d` argument alone will lead to use global options for aria2c or qbittorrent.
 
-<details>
-  <summary>
-
 ### QBittorrent
-  </summary>
 
 - Global options: `GlobalMaxRatio` and `GlobalMaxSeedingMinutes` in qbittorrent.conf, `-1` means no limit, but you can cancel manually.
+
   - **NOTE**: Don't change `MaxRatioAction`.
 
-</details>
-
-<details>
-  <summary>
-
 ### Aria2c
-  </summary>
-
+  
 - Global options: `--seed-ratio` (0 means no limit) and `--seed-time` (0 means no seed) in aria.sh.
 
 ---
 
-</details>
-</details>
-
-<details>
-  <summary>
-
 ##### Using Service Accounts for uploading to avoid user rate limit
-  </summary>
 
 > For Service Account to work, you must set `USE_SERVICE_ACCOUNTS` = "True" in config file or environment variables.
-> **NOTE**: Using Service Accounts is only recommended while uploading to a Team Drive.
 
-<details>
-  <summary>
+> **NOTE**: Using Service Accounts is only recommended while uploading to a Team Drive.
 
 ### 1. Generate Service Accounts. <a href="https://cloud.google.com/iam/docs/service-accounts">What is Service Account?</a>
   </summary>
@@ -831,12 +646,8 @@ python3 gen_sa_accounts.py --download-keys $PROJECTID
 
 Choose one of these methods
 
-<details>
-  <summary>
-
 ##### 1. Create Service Accounts in existed Project (Recommended Method)
-  </summary>
-
+  
 - List your projects ids
 
 ```
@@ -861,38 +672,21 @@ python3 gen_sa_accounts.py --create-sas $PROJECTID
 python3 gen_sa_accounts.py --download-keys $PROJECTID
 ```
 
-</details>
-
-<details>
-  <summary>
-
 ##### 2. Create Service Accounts in New Project
-  </summary>
-
+  
 ```
 python3 gen_sa_accounts.py --quick-setup 1 --new-only
 ```
 
 A folder named accounts will be created which will contain keys for the Service Accounts.
 
-</details>
-</details>
-
-<details>
-  <summary>
-
 ### 2. Add Service Accounts
-  </summary>
 
 #### Two methods to add service accounts
 
 Choose one of these methods
 
-<details>
-  <summary>
-
 ##### 1. Add Them To Google Group then to Team Drive (Recommended)
-  </summary>
 
 - Mount accounts folder
 
@@ -921,14 +715,8 @@ cd ..
 
 Then add emails from emails.txt to Google Group, after that add this Google Group to your Shared Drive and promote it to manager and delete email.txt file from accounts folder
 
-</details>
-
-<details>
-  <summary>
-
 ##### 2. Add Them To Team Drive Directly
-  </summary>
-
+  
 - Run:
 
 ```
@@ -937,16 +725,8 @@ python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 
 ---
 
-</details>
-</details>
-</details>
-
-<details>
-  <summary>
-
 ##### Create Database
-  </summary>
-
+  
 1. Go to `https://mongodb.com/` and sign-up.
 2. Create Shared Cluster.
 3. Press on `Database` under `Deployment` Header, your created cluster will be there.
@@ -956,13 +736,7 @@ python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 
 ---
 
-</details>
-
-<details>
-  <summary>
-
 ##### Multi Drive List
-  </summary>
 
 To use list from multi TD/folder. Run driveid.py in your terminal and follow it. It will generate **list_drives.txt** file or u can simply create `list_drives.txt` file in working directory and fill it, check below format:
 
@@ -980,14 +754,8 @@ TD2 0AO1JDB1t3i5jUk9PVA https://example.dev
 
 ---
 
-</details>
-
-<details>
-  <summary>
-
 ##### Yt-dlp and Aria2c Authentication Using .netrc File
-  </summary>
-
+  
 For using your premium accounts in yt-dlp or for protected Index Links, create .netrc file according to following format:
 
 **Note**: Create .netrc and not netrc, this file will be hidden, so view hidden files to edit it after creation.
@@ -1010,9 +778,6 @@ Where host is the name of extractor (eg. instagram, Twitch). Multiple accounts o
 Authentication using [cookies.txt](https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies) file. CREATE IT IN INCOGNITO TAB.
 
 ---
-
-</details>
-</details>
 
 # All Thanks To Our Contributors
 
