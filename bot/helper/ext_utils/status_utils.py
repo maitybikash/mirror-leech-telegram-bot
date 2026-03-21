@@ -115,7 +115,7 @@ def get_readable_time(seconds: int):
 
 def time_to_seconds(time_duration):
     try:
-        parts = time_duration.split(":")
+        parts = str(time_duration).strip().split(":")
         if len(parts) == 3:
             hours, minutes, seconds = map(float, parts)
         elif len(parts) == 2:
