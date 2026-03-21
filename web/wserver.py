@@ -14,39 +14,25 @@ from aiohttp.client_exceptions import ClientError
 from aioqbt.exc import AQError
 
 import hmac
-import hashlib
-from os import getenv
-from importlib import import_module
+from bot.core.config_manager import Config
 from web.nodes import extract_file_ids, make_tree
+
+Config.load()
 
 getLogger("httpx").setLevel(WARNING)
 getLogger("aiohttp").setLevel(WARNING)
 
 
-def get_telegram_hash():
-    try:
-        settings = import_module("config")
-        val = getattr(settings, "TELEGRAM_HASH", "")
-        return str(val).strip() if val else ""
-    except ModuleNotFoundError:
-        return getenv("TELEGRAM_HASH", "").strip()
-
-
 def verify_pin(gid, pin):
-    key = get_telegram_hash()
-    if not key:
-        key = "secret"
-    key_bytes = key.encode()
-    gid_bytes = gid.encode()
-    expected = hmac.new(key_bytes, gid_bytes, hashlib.sha256).hexdigest()[:6]
-    return hmac.compare_digest(expected, pin)
+    return hmac.compare_digest(Config.get_pin(gid), pin)
+
 
 aria2 = None
 qbittorrent = None
 sabnzbd_client = SabnzbdClient(
-    host="http://localhost",
-    api_key="mltb",
-    port="8070",
+    host=Config.SABNZBD_HOST,
+    api_key=Config.SABNZBD_API_KEY,
+    port=Config.SABNZBD_PORT,
 )
 
 
