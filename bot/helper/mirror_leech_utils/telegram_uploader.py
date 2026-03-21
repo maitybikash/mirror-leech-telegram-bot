@@ -420,8 +420,7 @@ class TelegramUploader:
         if thumb is None:
             thumb = await get_video_thumbnail(self._up_path, duration)
         if thumb is not None and thumb != "none":
-            with Image.open(thumb) as img:
-                width, height = img.size
+            width, height = await sync_to_async(self._get_image_size, thumb)
         else:
             width = 480
             height = 320
@@ -564,6 +563,11 @@ class TelegramUploader:
     @property
     def processed_bytes(self):
         return self._processed_bytes
+
+    @staticmethod
+    def _get_image_size(path):
+        with Image.open(path) as img:
+            return img.size
 
     async def cancel_task(self):
         self._listener.is_cancelled = True

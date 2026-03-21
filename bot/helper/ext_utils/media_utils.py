@@ -18,6 +18,11 @@ from .files_utils import get_mime_type, is_archive, is_archive_split
 from .status_utils import time_to_seconds
 
 
+def _save_image(photo_dir, output):
+    with Image.open(photo_dir) as img:
+        img.convert("RGB").save(output, "JPEG")
+
+
 async def create_thumb(msg, _id=""):
     if not _id:
         _id = time()
@@ -27,7 +32,7 @@ async def create_thumb(msg, _id=""):
     await makedirs(path, exist_ok=True)
     photo_dir = await msg.download()
     output = ospath.join(path, f"{_id}.jpg")
-    await sync_to_async(Image.open(photo_dir).convert("RGB").save, output, "JPEG")
+    await sync_to_async(_save_image, photo_dir, output)
     await remove(photo_dir)
     return output
 
